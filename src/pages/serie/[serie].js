@@ -117,11 +117,6 @@ const SeriesDetail = ({ serie, trailerKey, watchProviders }) => {
                                     />
                                 </a>
                             ))}
-                            {watchProviders.length === 0 && inTheaters && (
-                                <p className='flex flex-row mt-4 items-center justify-center text-xl font-bold mb-4 p-4 bg-gradient-to-r from-red-500 to-orange-600 text-white rounded-md'>
-                                    Em cartaz nos cinemas!
-                                </p>
-                            )}
                         </div>
 
                         {trailerKey && (
