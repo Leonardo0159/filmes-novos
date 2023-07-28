@@ -23,7 +23,7 @@ const CarouselBanner = () => {
             if (res && res.results) {
                 const sortedMovies = res.results
                     .sort((a, b) => new Date(b.release_date) - new Date(a.release_date))
-                    .slice(0, 5);
+                    .slice(0, 10);
                 setMovies(sortedMovies);
             }
         })

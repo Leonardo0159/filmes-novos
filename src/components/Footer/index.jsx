@@ -43,8 +43,8 @@ export const Footer = () => {
                     {/* Contatos */}
                     <div className="w-full md:w-1/4">
                         <h4 className="mb-4 text-gold-500 font-bold">Contato</h4>
-                        <p className="text-sm text-gray-300 mb-2">Email: contato@filmesnovos.com.br</p>
-                        <p className="text-sm text-gray-300">Telefone: (11) 1234-5678</p>
+                        <p className="text-sm text-gray-300 mb-2">Email: </p>
+                        <p className="text-sm text-gray-300">Telefone: </p>
                     </div>
                 </div>
 

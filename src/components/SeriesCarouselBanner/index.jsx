@@ -23,7 +23,7 @@ const SeriesCarouselBanner = () => {
             if (res && res.results) {
                 const sortedSeries = res.results
                     .sort((a, b) => new Date(b.first_air_date) - new Date(a.first_air_date))
-                    .slice(0, 5);
+                    .slice(0, 10);
                 setSeries(sortedSeries);
             }
         })
