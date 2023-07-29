@@ -53,7 +53,7 @@ const SeriesDetail = ({ serie, trailerKey, watchProviders }) => {
     function handleLinkClick(providerName) {
         ReactGA.event({
             category: 'Watch Provider',
-            action: 'Click',
+            action: 'Click Link Streaming',
             label: providerName
         });
     }

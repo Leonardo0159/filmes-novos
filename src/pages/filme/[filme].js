@@ -52,7 +52,7 @@ const MovieDetail = ({ movie, trailerKey, watchProviders, inTheaters }) => {
     function handleLinkClick(providerName) {
         ReactGA.event({
             category: 'Watch Provider',
-            action: 'Click',
+            action: 'Click Link Streaming',
             label: providerName
         });
     }
