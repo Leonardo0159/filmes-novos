@@ -11,6 +11,7 @@ const FeaturedMovies = ({ initialPage }) => {
     const [movies, setMovies] = useState([]);
     const [currentPage, setCurrentPage] = useState(initialPage);  // Use initialPage aqui
     const [totalPages, setTotalPages] = useState(1);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         // Atualize o currentPage se o query.pagina mudar
@@ -22,11 +23,13 @@ const FeaturedMovies = ({ initialPage }) => {
 
     useEffect(() => {
         const fetchMovies = async () => {
+            setIsLoading(true)
             const data = await get(`https://api.themoviedb.org/3/movie/popular?language=pt-BR&page=${currentPage}`);
             if (data && data.results) {
                 setMovies(data.results.slice(0, 20));
                 setTotalPages(data.total_pages);
             }
+            setIsLoading(false);
         };
 
         fetchMovies();
@@ -62,29 +65,44 @@ const FeaturedMovies = ({ initialPage }) => {
         return `${day}/${month}/${year}`;
     }
 
+    const renderSkeleton = () => (
+        <div className="animate-pulse">
+            <div className="rounded-lg overflow-hidden shadow-lg bg-gray-300 h-64 w-full"></div>
+            <div className="p-4">
+                <div className="h-5 bg-gray-400 rounded w-3/4"></div>
+                <div className="h-4 bg-gray-400 rounded mt-2 w-1/2"></div>
+                <div className="h-4 bg-gray-400 rounded mt-2 w-1/4"></div>
+            </div>
+        </div>
+    );
+
     return (
         <section className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <h2 id='titulo' className="text-2xl mb-6 font-bold">Filmes Destaques</h2>
             <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {movies.map(movie => (
-                    <li key={movie.id} className="rounded-lg overflow-hidden shadow-lg bg-white">
-                        <Link href={`/filme/${encodeURIComponent(movie.title.toLowerCase().replace(/ /g, '-'))}`}>
-                            <div aria-label={movie.title}>  {/* Descriptive link text */}
-                                <img
-                                    src={`${TMDB_BASE_IMAGE_URL}${movie.poster_path}`}
-                                    alt={`Poster do filme ${movie.title}`}
-                                    className="w-full object-cover h-auto"
-                                    loading="lazy"  // Lazy loading
-                                />
-                                <div className="p-4">
-                                    <h3 className="text-lg font-semibold">{movie.title}</h3>
-                                    <p className="text-sm text-gray-500 mt-2">Lançamento: {convertDate(movie.release_date)}</p>
-                                    <p className="text-sm text-gray-500 mt-2">Nota: {movie.vote_average}</p>
+                {isLoading ? (
+                    Array(20).fill(0).map((_, idx) => <li key={idx}>{renderSkeleton()}</li>)
+                ) : (
+                    movies.map(movie => (
+                        <li key={movie.id} className="rounded-lg overflow-hidden shadow-lg bg-white">
+                            <Link href={`/filme/${encodeURIComponent(movie.title.toLowerCase().replace(/ /g, '-'))}`}>
+                                <div aria-label={movie.title}>  {/* Descriptive link text */}
+                                    <img
+                                        src={`${TMDB_BASE_IMAGE_URL}${movie.poster_path}`}
+                                        alt={`Poster do filme ${movie.title}`}
+                                        className="w-full object-cover h-auto"
+                                        loading="lazy"  // Lazy loading
+                                    />
+                                    <div className="p-4">
+                                        <h3 className="text-lg font-semibold">{movie.title}</h3>
+                                        <p className="text-sm text-gray-500 mt-2">Lançamento: {convertDate(movie.release_date)}</p>
+                                        <p className="text-sm text-gray-500 mt-2">Nota: {movie.vote_average}</p>
+                                    </div>
                                 </div>
-                            </div>
-                        </Link>
-                    </li>
-                ))}
+                            </Link>
+                        </li>
+                    ))
+                )}
             </ul>
             <div className="mt-6 flex justify-between items-center">
                 <button
