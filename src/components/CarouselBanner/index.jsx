@@ -39,34 +39,36 @@ const CarouselBanner = () => {
     }
 
     return (
-        <Slider {...settings}>
-            {movies.map((movie) => (
-                <article key={movie.id} className="relative">
-                    <picture>
-                        <source media="(min-width: 768px)" srcSet={`${TMDB_BASE_IMAGE_URL}${movie.backdrop_path}`} />
-                        <img
-                            src={`${TMDB_BASE_IMAGE_URL}${movie.poster_path}`}
-                            alt={`Imagem promocional do filme ${movie.title}`}
-                            className="h-[40rem] w-full object-cover"
-                            loading="lazy"  // Lazy loading
-                        />
-                    </picture>
-                    <div className="absolute inset-0 flex items-center justify-center w-1/2">
-                        <div className="bg-black p-4 text-white flex flex-col gap-4 rounded-2xl opacity-90">
-                            <h2 className="text-2xl font-bold">{movie.title}</h2>
-                            <p className="lg:block hidden">{movie.overview}</p>
-                            <time dateTime={movie.release_date}>Lançamento: {convertDate(movie.release_date)}</time>
-                            <p>Nota: {movie.vote_average}</p>
-                            <Link href={`/filme/${encodeURIComponent(movie.title.toLowerCase().replace(/ /g, '-'))}`}>
-                                <button className="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
-                                    Ver detalhes
-                                </button>
-                            </Link>
+        <div className="overflow-x-hidden overflow-y-hidden">
+            <Slider {...settings} style={{ maxWidth: '100vw' }}>
+                {movies.map((movie) => (
+                    <article key={movie.id} className="relative">
+                        <picture>
+                            <source media="(min-width: 768px)" srcSet={`${TMDB_BASE_IMAGE_URL}${movie.backdrop_path}`} />
+                            <img
+                                src={`${TMDB_BASE_IMAGE_URL}${movie.poster_path}`}
+                                alt={`Imagem promocional do filme ${movie.title}`}
+                                className="h-[40rem] w-full object-cover"
+                                loading="lazy"  // Lazy loading
+                            />
+                        </picture>
+                        <div className="absolute inset-0 flex items-center justify-center w-1/2">
+                            <div className="bg-black p-4 text-white flex flex-col gap-4 rounded-2xl opacity-90">
+                                <h2 className="text-2xl font-bold">{movie.title}</h2>
+                                <p className="lg:block hidden">{movie.overview}</p>
+                                <time dateTime={movie.release_date}>Lançamento: {convertDate(movie.release_date)}</time>
+                                <p>Nota: {movie.vote_average}</p>
+                                <Link href={`/filme/${encodeURIComponent(movie.title.toLowerCase().replace(/ /g, '-'))}`}>
+                                    <button className="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
+                                        Ver detalhes
+                                    </button>
+                                </Link>
+                            </div>
                         </div>
-                    </div>
-                </article>
-            ))}
-        </Slider>
+                    </article>
+                ))}
+            </Slider>
+        </div>
     );
 }
 
