@@ -5,7 +5,7 @@ import SeriesCarouselBanner from '@/src/components/SeriesCarouselBanner'
 import Head from 'next/head'
 
 
-export default function Home() {
+export default function Series() {
   return (
     <div>
       <Head>
