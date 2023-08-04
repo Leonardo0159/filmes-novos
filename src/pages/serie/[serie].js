@@ -101,7 +101,7 @@ const SeriesDetail = ({ serie, trailerKey, watchProviders }) => {
                             <h3 className='text-xl md:text-3xl font-bold text-center text-gray-800 absolute -top-6 left-1/2 transform -translate-x-1/2 bg-white px-4'>
                                 Onde posso assistir?
                             </h3>
-                            {watchProviders.map((provider, index) => (
+                            {watchProviders && watchProviders.map((provider, index) => (
                                 <a
                                     href={getProviderUrl(provider.provider_name)}
                                     target="_blank"
@@ -181,7 +181,7 @@ export async function getServerSideProps(context) {
         props: {
             serie,
             trailerKey: trailer ? trailer.key : null,
-            watchProviders
+            watchProviders: watchProviders || null
         }
     };
 }
