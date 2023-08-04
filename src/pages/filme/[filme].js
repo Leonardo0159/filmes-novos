@@ -100,7 +100,7 @@ const MovieDetail = ({ movie, trailerKey, watchProviders, inTheaters }) => {
                             <h3 className='text-xl md:text-3xl font-bold text-center text-gray-800 absolute -top-6 left-1/2 transform -translate-x-1/2 bg-white px-4'>
                                 Onde posso assistir?
                             </h3>
-                            {watchProviders.map((provider, index) => (
+                            {watchProviders && watchProviders.map((provider, index) => (
                                 <a
                                     href={getProviderUrl(provider.provider_name)}
                                     target="_blank"
@@ -116,7 +116,7 @@ const MovieDetail = ({ movie, trailerKey, watchProviders, inTheaters }) => {
                                     />
                                 </a>
                             ))}
-                            {watchProviders.length === 0 && inTheaters && (
+                            {watchProviders && watchProviders.length === 0 && inTheaters && (
                                 <p className='flex flex-row mt-4 items-center justify-center text-xl font-bold mb-4 p-4 bg-gradient-to-r from-red-500 to-orange-600 text-white rounded-md'>
                                     Em cartaz nos cinemas!
                                 </p>
@@ -189,7 +189,7 @@ export async function getServerSideProps(context) {
         props: {
             movie,
             trailerKey: trailer ? trailer.key : null,
-            watchProviders,
+            watchProviders: watchProviders || null,
             inTheaters: isPlaying
         }
     };
