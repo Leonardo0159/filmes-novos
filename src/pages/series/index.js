@@ -1,4 +1,5 @@
 import FeaturedSeries from '@/src/components/FeaturedSeries'
+import FireTvComponent from '@/src/components/FireTvComponent'
 import { Footer } from '@/src/components/Footer'
 import { Header } from '@/src/components/Header'
 import SeriesCarouselBanner from '@/src/components/SeriesCarouselBanner'
@@ -20,6 +21,7 @@ export default function Series() {
       <div className='bg-gray-100'>
         <Header />
         <SeriesCarouselBanner />
+        <FireTvComponent />
         <FeaturedSeries />
         <Footer />
       </div>

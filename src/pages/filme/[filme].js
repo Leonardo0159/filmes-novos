@@ -3,6 +3,7 @@ import { Header } from '@/src/components/Header';
 import { Footer } from '@/src/components/Footer';
 import { get } from '@/src/services/api';
 import ReactGA from 'react-ga4';
+import FireTvComponent from '@/src/components/FireTvComponent';
 
 ReactGA.initialize('G-WBBLV0VBLB');
 
@@ -122,6 +123,8 @@ const MovieDetail = ({ movie, trailerKey, watchProviders, inTheaters }) => {
                                 </p>
                             )}
                         </div>
+
+                        <FireTvComponent />
 
                         {trailerKey && (
                             <div className='h-[14rem] md:h-[44rem] rounded-lg'>

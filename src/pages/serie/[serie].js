@@ -4,6 +4,7 @@ import { Header } from '@/src/components/Header';
 import { Footer } from '@/src/components/Footer';
 import { get } from '@/src/services/api';
 import ReactGA from 'react-ga4';
+import FireTvComponent from '@/src/components/FireTvComponent';
 
 ReactGA.initialize('G-WBBLV0VBLB');
 
@@ -77,7 +78,7 @@ const SeriesDetail = ({ serie, trailerKey, watchProviders }) => {
             </Head>
 
             <Header />
-            <main className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <main className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {serie ? (
                     <div>
                         <div className='flex flex-col md:flex-row gap-4 md:gap-12'>
@@ -118,6 +119,8 @@ const SeriesDetail = ({ serie, trailerKey, watchProviders }) => {
                                 </a>
                             ))}
                         </div>
+
+                        <FireTvComponent />
 
                         {trailerKey && (
                             <div className='h-[14rem] md:h-[44rem] rounded-lg'>
