@@ -21,7 +21,7 @@ const SeriesDetail = ({ serie, trailerKey, watchProviders }) => {
             case 'HBO Max':
                 return 'https://www.hbomax.com/';
             case 'Amazon Prime Video':
-                return 'https://www.primevideo.com/';
+                return 'https://www.amazon.com.br/prime/ref=sxts_snpl_2_0_a25fa449-a2d0-4312-84b4-ab72added62b?pd_rd_w=BfUZG&amp;content-id=amzn1.sym.a25fa449-a2d0-4312-84b4-ab72added62b:amzn1.sym.a25fa449-a2d0-4312-84b4-ab72added62b&amp;pf_rd_p=a25fa449-a2d0-4312-84b4-ab72added62b&amp;pf_rd_r=0RQ4T9XJYWDAJPYQZW17&amp;pd_rd_wg=94cHY&amp;pd_rd_r=c4d59310-e8c5-4868-8ad4-f26db7aee105&amp;qid=1691242184&_encoding=UTF8&tag=leonardo045-20&linkCode=ur2&linkId=d5ec682a76af7fc0bbf25ccc0357bc81&camp=1789&creative=9325';
             case 'Star Plus':
                 return 'https://www.starplus.com/';
             case 'Paramount Plus':
@@ -31,7 +31,7 @@ const SeriesDetail = ({ serie, trailerKey, watchProviders }) => {
             case 'NOW':
                 return 'https://www.clarotvmais.com.br/';
             case 'Paramount+ Amazon Channel':
-                return 'https://www.primevideo.com/';
+                return 'https://www.amazon.com.br/prime/ref=sxts_snpl_2_0_a25fa449-a2d0-4312-84b4-ab72added62b?pd_rd_w=BfUZG&amp;content-id=amzn1.sym.a25fa449-a2d0-4312-84b4-ab72added62b:amzn1.sym.a25fa449-a2d0-4312-84b4-ab72added62b&amp;pf_rd_p=a25fa449-a2d0-4312-84b4-ab72added62b&amp;pf_rd_r=0RQ4T9XJYWDAJPYQZW17&amp;pd_rd_wg=94cHY&amp;pd_rd_r=c4d59310-e8c5-4868-8ad4-f26db7aee105&amp;qid=1691242184&_encoding=UTF8&tag=leonardo045-20&linkCode=ur2&linkId=d5ec682a76af7fc0bbf25ccc0357bc81&camp=1789&creative=9325';
             case 'Paramount Plus Apple TV Channel':
                 return 'https://www.apple.com/br/apple-tv-plus/';
             case 'Apple TV Plus':
