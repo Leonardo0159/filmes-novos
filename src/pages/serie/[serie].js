@@ -64,15 +64,18 @@ const SeriesDetail = ({ serie, trailerKey, watchProviders }) => {
             <Head>
                 <title>{serie ? `${serie.name} - Resumo, Notas e Mais` : 'Carregando...'} | Séries Novas</title>
                 <meta name="description" content={serie ? `${serie.name}: ${serie.overview.substring(0, 155)}...` : 'Carregando...'} />
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
+                <meta charSet="utf-8" />
+                <meta property="og:image" content="/FN.png" />
+                <meta property="og:type" content="website" />
+                <meta property="og:url" content={typeof window !== "undefined" ? window.location.href : ''} />
                 <link rel="icon" href="/favicon.ico" />
-
                 {/* Open Graph Tags */}
                 {serie && (
                     <>
                         <meta property="og:title" content={`${serie.name} - Resumo, Notas e Mais | Séries Novas`} />
                         <meta property="og:description" content={serie.overview.substring(0, 155)} />
-                        <meta property="og:image" content="/FN.png" />
-                        <meta property="og:type" content="website" />
+                        <meta property="og:image" content={`${TMDB_BASE_IMAGE_URL}${serie.backdrop_path}`} />
                     </>
                 )}
             </Head>

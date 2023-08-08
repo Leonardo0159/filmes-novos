@@ -63,6 +63,11 @@ const MovieDetail = ({ movie, trailerKey, watchProviders, inTheaters }) => {
             <Head>
                 <title>{movie ? `${movie.title} - Resumo, Notas e Mais` : 'Carregando...'} | Filmes Novos</title>
                 <meta name="description" content={movie ? `${movie.title}: ${movie.overview.substring(0, 155)}...` : 'Carregando...'} />
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
+                <meta charSet="utf-8" />
+                <meta property="og:image" content="/FN.png" />
+                <meta property="og:type" content="website" />
+                <meta property="og:url" content={typeof window !== "undefined" ? window.location.href : ''} />
                 <link rel="icon" href="/favicon.ico" />
 
                 {/* Open Graph Tags */}
@@ -70,8 +75,7 @@ const MovieDetail = ({ movie, trailerKey, watchProviders, inTheaters }) => {
                     <>
                         <meta property="og:title" content={`${movie.title} - Resumo, Notas e Mais | Filmes Novos`} />
                         <meta property="og:description" content={movie.overview.substring(0, 155)} />
-                        <meta property="og:image" content="/FN.png" />
-                        <meta property="og:type" content="website" />
+                        <meta property="og:image" content={`${TMDB_BASE_IMAGE_URL}${movie.poster_path}`} />
                     </>
                 )}
             </Head>
