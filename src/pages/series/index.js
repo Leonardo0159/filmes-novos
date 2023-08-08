@@ -14,6 +14,8 @@ export default function Series() {
         <meta name="description" content="Filmes Novos traz para você os lançamentos mais recentes do cinema. Navegue por nossos destaques e descubra os melhores filmes para assistir." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta charSet="utf-8" />
+        <meta property="og:image" content="/FN.png" />
+        <meta property="og:type" content="website" />
         <link rel="icon" href="/favicon.ico" />
         {/* Adicione outras meta tags conforme necessário */}
       </Head>

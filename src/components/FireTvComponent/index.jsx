@@ -45,6 +45,7 @@ const FireTvComponent = () => {
                 <div>
                     <a className="bg-blue-500 text-white px-10 py-2 rounded-xl hover:bg-blue-600 transition"
                         target="_blank"
+                        rel="noreferrer"
                         href="https://www.amazon.com.br/b?_encoding=UTF8&tag=leonardo045-20&linkCode=ur2&linkId=82759e8cb8f4a378714542d2abab0e2c&camp=1789&creative=9325&node=17387226011"
                         onClick={handleLinkClick}>Saiba Mais</a>
                 </div>
