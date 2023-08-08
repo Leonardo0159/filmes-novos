@@ -63,18 +63,17 @@ const SeriesCarouselBanner = () => {
                 ) : (
                     series.map((serie) => (
                         <article key={serie.id} className="relative">
-                            <picture>
-                                <source media="(min-width: 768px)" srcSet={`${TMDB_BASE_IMAGE_URL}${serie.backdrop_path}`} />
+                            <div className="h-[40rem] w-full relative overflow-hidden">
                                 <Image
-                                    src={`${TMDB_BASE_IMAGE_URL}${serie.poster_path}`}
-                                    alt={`Imagem promocional da série ${serie.name}`}
-                                    layout="responsive"
-                                    height={400}
-                                    width={300}
-                                    className="h-[40rem] w-full object-cover"
-                                    loading="lazy"
+                                    src={window.innerWidth >= 768
+                                        ? `${TMDB_BASE_IMAGE_URL}${serie.backdrop_path}`
+                                        : `${TMDB_BASE_IMAGE_URL}${serie.poster_path}`}
+                                    alt={`Imagem promocional do filme ${serie.name}`}
+                                    layout="fill"
+                                    objectFit="cover"
+                                    loading="lazy"  // Lazy loading
                                 />
-                            </picture>
+                            </div>
                             <div className="absolute inset-0 flex items-center justify-center w-1/2">
                                 <div className="bg-black p-4 text-white flex flex-col gap-4 rounded-2xl opacity-90">
                                     <h2 className="text-2xl font-bold">{serie.name}</h2>
