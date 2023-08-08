@@ -13,6 +13,12 @@ export default function App({ Component, pageProps }) {
           r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
           a.appendChild(r);
       })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');`}}></Script>
+      <Script id="Adsense-id" async
+        onError={(e) => { console.error("Script failed to load", e); }}
+        strategy="afterInteractive"
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9645579603385719"
+        crossorigin="anonymous"
+      />
       <Component {...pageProps} />
     </>
   )
