@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';  // Importe o useRouter
 import Link from 'next/link';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import Image from 'next/image';
 
 const TMDB_BASE_IMAGE_URL = "https://image.tmdb.org/t/p/w500";
 
@@ -87,11 +88,13 @@ const FeaturedMovies = ({ initialPage }) => {
                         <li key={movie.id} className="rounded-lg overflow-hidden shadow-lg bg-white">
                             <Link href={`/filme/${encodeURIComponent(movie.title.toLowerCase().replace(/ /g, '-'))}`}>
                                 <div aria-label={movie.title}>  {/* Descriptive link text */}
-                                    <img
+                                    <Image
                                         src={`${TMDB_BASE_IMAGE_URL}${movie.poster_path}`}
                                         alt={`Poster do filme ${movie.title}`}
+                                        layout="responsive"
+                                        height={500}
+                                        width={342}
                                         className="w-full object-cover h-auto"
-                                        loading="lazy"  // Lazy loading
                                     />
                                     <div className="p-4">
                                         <h3 className="text-lg font-semibold">{movie.title}</h3>

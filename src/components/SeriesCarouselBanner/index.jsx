@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Slider from "react-slick";
 import Link from 'next/link';
 import { FaImage } from 'react-icons/fa';
+import Image from 'next/image';
 
 const TMDB_BASE_IMAGE_URL = "https://image.tmdb.org/t/p/original"; // Base URL para imagens do TMDB
 
@@ -64,9 +65,12 @@ const SeriesCarouselBanner = () => {
                         <article key={serie.id} className="relative">
                             <picture>
                                 <source media="(min-width: 768px)" srcSet={`${TMDB_BASE_IMAGE_URL}${serie.backdrop_path}`} />
-                                <img
+                                <Image
                                     src={`${TMDB_BASE_IMAGE_URL}${serie.poster_path}`}
                                     alt={`Imagem promocional da série ${serie.name}`}
+                                    layout="responsive"
+                                    height={400}
+                                    width={300}
                                     className="h-[40rem] w-full object-cover"
                                     loading="lazy"
                                 />

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Slider from "react-slick";
 import Link from 'next/link';
 import { FaImage } from 'react-icons/fa';
+import Image from 'next/image';
 
 const TMDB_BASE_IMAGE_URL = "https://image.tmdb.org/t/p/original"; // Base URL para imagens do TMDB
 
@@ -62,15 +63,17 @@ const CarouselBanner = () => {
                 ) : (
                     movies.map((movie) => (
                         <article key={movie.id} className="relative">
-                            <picture>
-                                <source media="(min-width: 768px)" srcSet={`${TMDB_BASE_IMAGE_URL}${movie.backdrop_path}`} />
-                                <img
-                                    src={`${TMDB_BASE_IMAGE_URL}${movie.poster_path}`}
+                            <div className="h-[40rem] w-full relative overflow-hidden">
+                                <Image
+                                    src={window.innerWidth >= 768
+                                        ? `${TMDB_BASE_IMAGE_URL}${movie.backdrop_path}`
+                                        : `${TMDB_BASE_IMAGE_URL}${movie.poster_path}`}
                                     alt={`Imagem promocional do filme ${movie.title}`}
-                                    className="h-[40rem] w-full object-cover"
+                                    layout="fill"
+                                    objectFit="cover"
                                     loading="lazy"  // Lazy loading
                                 />
-                            </picture>
+                            </div>
                             <div className="absolute inset-0 flex items-center justify-center w-1/2">
                                 <div className="bg-black p-4 text-white flex flex-col gap-4 rounded-2xl opacity-90">
                                     <h2 className="text-2xl font-bold">{movie.title}</h2>

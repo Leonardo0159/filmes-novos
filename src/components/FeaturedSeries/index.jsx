@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';  // Importe o useRouter
 import Link from 'next/link';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import Image from 'next/image';
 
 const TMDB_BASE_IMAGE_URL = "https://image.tmdb.org/t/p/w500";
 
@@ -87,10 +88,13 @@ const FeaturedSeries = ({ initialPage }) => {
                         <li key={serie.id} className="rounded-lg overflow-hidden shadow-lg bg-white">
                             <Link href={`/serie/${encodeURIComponent(serie.name.toLowerCase().replace(/ /g, '-'))}`}>
                                 <div aria-label={serie.name}>
-                                    <img
+                                    <Image
                                         src={`${TMDB_BASE_IMAGE_URL}${serie.poster_path}`}
                                         alt={`Poster da série ${serie.name}`}
-                                        className="w-full object-cover h-auto"
+                                        layout="responsive"
+                                        width={500}
+                                        height={750}
+                                        objectFit="cover"
                                         loading="lazy"
                                     />
                                     <div className="p-4">

@@ -4,6 +4,7 @@ import { Footer } from '@/src/components/Footer';
 import { get } from '@/src/services/api';
 import ReactGA from 'react-ga4';
 import FireTvComponent from '@/src/components/FireTvComponent';
+import Image from 'next/image';
 
 ReactGA.initialize('G-WBBLV0VBLB');
 
@@ -136,8 +137,8 @@ const MovieDetail = ({ movie, trailerKey, watchProviders, inTheaters }) => {
                                     width="100%"
                                     height="100%"
                                     src={`https://www.youtube.com/embed/${trailerKey}`}
-                                    frameborder="0"
-                                    allowfullscreen
+                                    frameBorder="0"
+                                    allowFullScreen
                                     className="mt-8 rounded-lg"
                                 ></iframe>
                             </div>

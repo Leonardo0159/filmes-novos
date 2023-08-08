@@ -1,5 +1,6 @@
 import Slider from "react-slick";
 import ReactGA from 'react-ga4';
+import Image from 'next/image';
 
 ReactGA.initialize('G-WBBLV0VBLB');
 const FireTvComponent = () => {
@@ -29,11 +30,11 @@ const FireTvComponent = () => {
     }
 
     return (
-        <section className="flex flex-row max-w-screen-xl my-8 mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-white border border-gray-100 rounded-xl shadow-lg">
-            <div className=' py-10 w-1/2 flex flex-col justify-center items-center'>
+        <section className="mx-4 flex flex-col-reverse md:flex-row max-w-screen-xl my-8 md:mx-auto px-4 sm:px-6 lg:px-8 md:py-8 bg-white border border-gray-100 rounded-xl shadow-lg">
+            <div className=' py-10 w-full md:w-1/2 flex flex-col justify-center items-center'>
                 <h2 className="text-2xl font-bold mb-4">Descubra o Fire TV Stick</h2>
                 <p className="mb-8 text-center">Experimente um novo mundo de entretenimento com o Fire TV Stick da Amazon. Veja o que você pode desfrutar:</p>
-                <div className="w-3/4 px-8 mb-4 p-4 h-52 rounded-lg">
+                <div className="w-full md:w-3/4 px-8 mb-16 md:mb-4 p-4 h-52 rounded-lg">
                     <Slider {...settings}>
                         {frasesFireTv.map((frase, key) => (
                             <div key={key} className="text-center">
@@ -50,8 +51,8 @@ const FireTvComponent = () => {
                         onClick={handleLinkClick}>Saiba Mais</a>
                 </div>
             </div>
-            <div className='flex items-center justify-center py-10 w-1/2'>
-                <img src='/images/firetv.jpg' alt="Amazon Fire TV Stick" className='w-3/5 rounded-lg' />
+            <div className='flex items-center justify-center py-10 w-full md:w-1/2'>
+                <img src='/images/firetv.jpg' alt="Amazon Fire TV Stick" className='md:w-3/5 rounded-lg' />
             </div>
         </section>
     );
