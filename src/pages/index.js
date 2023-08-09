@@ -6,6 +6,7 @@ import FeaturedMovies from '../components/FeaturedMovies'
 import { useEffect } from 'react'
 import ReactGA from 'react-ga4';
 import FireTvComponent from '../components/FireTvComponent'
+import EchoComponent from '../components/EchoComponent'
 
 ReactGA.initialize('G-WBBLV0VBLB');
 export default function Home() {
@@ -41,6 +42,7 @@ export default function Home() {
         <CarouselBanner />
         <FireTvComponent />
         <FeaturedMovies />
+        <EchoComponent />
         <Footer />
       </div>
 

@@ -5,6 +5,7 @@ import { get } from '@/src/services/api';
 import ReactGA from 'react-ga4';
 import FireTvComponent from '@/src/components/FireTvComponent';
 import Image from 'next/image';
+import EchoComponent from '@/src/components/EchoComponent';
 
 ReactGA.initialize('G-WBBLV0VBLB');
 
@@ -143,6 +144,8 @@ const MovieDetail = ({ movie, trailerKey, watchProviders, inTheaters }) => {
                                 ></iframe>
                             </div>
                         )}
+
+                        <EchoComponent />
 
                     </div>
                 ) : (

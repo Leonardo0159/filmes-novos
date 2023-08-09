@@ -1,3 +1,4 @@
+import EchoComponent from '@/src/components/EchoComponent'
 import FeaturedSeries from '@/src/components/FeaturedSeries'
 import FireTvComponent from '@/src/components/FireTvComponent'
 import { Footer } from '@/src/components/Footer'
@@ -34,6 +35,7 @@ export default function Series() {
         <SeriesCarouselBanner />
         <FireTvComponent />
         <FeaturedSeries />
+        <EchoComponent />
         <Footer />
       </div>
 
