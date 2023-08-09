@@ -16,6 +16,8 @@ export default function Series() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta charSet="utf-8" />
         <meta property="og:image" content="/FN.png" />
+        <meta property="og:image:width" content="183" />
+        <meta property="og:image:height" content="224" />
         <meta property="og:type" content="website" />
         <meta property="og:title" content="Filmes Novos | Descubra os lançamentos mais recentes do cinema" />
         <meta property="og:description" content="Filmes Novos traz para você os lançamentos mais recentes do cinema. Navegue por nossos destaques e descubra os melhores filmes para assistir." />
