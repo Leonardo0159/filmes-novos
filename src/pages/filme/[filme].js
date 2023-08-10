@@ -46,6 +46,10 @@ const MovieDetail = ({ movie, trailerKey, watchProviders, inTheaters }) => {
                 return 'https://www.crunchyroll.com/';
             case 'Funimation Now':
                 return 'https://www.funimation.com/';
+            case 'Looke':
+                return 'https://www.primevideo.com/offers/?benefitId=lookebr&tag=leonardo045-20';
+            case 'Looke Amazon Channel':
+                return 'https://www.primevideo.com/offers/?benefitId=lookebr&tag=leonardo045-20';
             // Adicione mais cases conforme necessário
             default:
                 return '#';  // retorna um link placeholder ou pode retornar null se preferir
