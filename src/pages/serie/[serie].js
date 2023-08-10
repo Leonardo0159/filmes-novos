@@ -7,6 +7,7 @@ import ReactGA from 'react-ga4';
 import FireTvComponent from '@/src/components/FireTvComponent';
 import Image from 'next/image';
 import EchoComponent from '@/src/components/EchoComponent';
+import DisqusComments from '@/src/components/DisqusComments';
 
 ReactGA.initialize('G-WBBLV0VBLB');
 
@@ -147,6 +148,8 @@ const SeriesDetail = ({ serie, trailerKey, watchProviders }) => {
                         )}
 
                         <EchoComponent />
+
+                        <DisqusComments post={serie} />
 
                     </div>
                 ) : (

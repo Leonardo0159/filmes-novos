@@ -6,12 +6,15 @@ import ReactGA from 'react-ga4';
 import FireTvComponent from '@/src/components/FireTvComponent';
 import Image from 'next/image';
 import EchoComponent from '@/src/components/EchoComponent';
+import DisqusComments from '@/src/components/DisqusComments';
 
 ReactGA.initialize('G-WBBLV0VBLB');
 
 const TMDB_BASE_IMAGE_URL = "https://image.tmdb.org/t/p/original";
 
 const MovieDetail = ({ movie, trailerKey, watchProviders, inTheaters }) => {
+
+    console.log(movie);
 
     function getProviderUrl(providerName) {
         console.log(providerName)
@@ -152,6 +155,8 @@ const MovieDetail = ({ movie, trailerKey, watchProviders, inTheaters }) => {
                         )}
 
                         <EchoComponent />
+
+                        <DisqusComments post={movie}/>
 
                     </div>
                 ) : (
