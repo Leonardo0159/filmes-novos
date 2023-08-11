@@ -52,6 +52,10 @@ const SeriesDetail = ({ serie, trailerKey, watchProviders }) => {
                 return 'https://www.primevideo.com/offers/?benefitId=lookebr&tag=leonardo045-20';
             case 'Looke Amazon Channel':
                 return 'https://www.primevideo.com/offers/?benefitId=lookebr&tag=leonardo045-20';
+            case 'Starz Play Amazon Channel':
+                return 'https://www.primevideo.com/offers/?benefitId=starzplaybr&tag=leonardo045-20';
+            case 'Lionsgate Plus':
+                return 'https://www.primevideo.com/offers/?benefitId=starzplaybr&tag=leonardo045-20';
             // Adicione mais cases conforme necessário
             default:
                 return '#';  // retorna um link placeholder ou pode retornar null se preferir
