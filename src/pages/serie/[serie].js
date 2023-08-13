@@ -88,7 +88,6 @@ const SeriesDetail = ({ serie, trailerKey, watchProviders }) => {
                     <>
                         <meta property="og:title" content={`${serie.name} - Resumo, Notas e Mais | Séries Novas`} />
                         <meta property="og:description" content={serie.overview.substring(0, 155)} />
-                        <meta property="og:image" content={`${TMDB_BASE_IMAGE_URL}${serie.backdrop_path}`} />
                     </>
                 )}
             </Head>

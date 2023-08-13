@@ -90,7 +90,6 @@ const MovieDetail = ({ movie, trailerKey, watchProviders, inTheaters }) => {
                     <>
                         <meta property="og:title" content={`${movie.title} - Resumo, Notas e Mais | Filmes Novos`} />
                         <meta property="og:description" content={movie.overview.substring(0, 155)} />
-                        <meta property="og:image" content={`${TMDB_BASE_IMAGE_URL}${movie.poster_path}`} />
                     </>
                 )}
             </Head>

@@ -1,12 +1,17 @@
 import { get } from "@/src/services/api";
 import Link from "next/link";
 import { useState } from "react";
-import { FaBars, FaSearch } from 'react-icons/fa';
+import { FaBars, FaSearch, FaAngleDown } from 'react-icons/fa';
 
 export const Header = () => {
     const [hiddenMenu, setHiddenMenu] = useState("hidden");
     const [query, setQuery] = useState("");
     const [searchResults, setSearchResults] = useState([]);
+    const [showPlatformDropdown, setShowPlatformDropdown] = useState(false);
+
+    const togglePlatformDropdown = () => {
+        setShowPlatformDropdown(prev => !prev);
+    };
 
     const openMenu = () => {
         setHiddenMenu(prevState => (prevState === "hidden" ? "" : "hidden"));
@@ -63,6 +68,34 @@ export const Header = () => {
                                     <div className="block py-2 pl-3 pr-4 text-white hover:text-gold-500">Series</div>
                                 </Link>
                             </li>
+                            <li className="hidden relative group">
+                                <div className="flex flex-row items-center gap-2 py-2 pl-3 pr-4 text-white hover:text-gold-500 cursor-pointer" onClick={togglePlatformDropdown}>
+                                    Catálogo <FaAngleDown />
+                                </div>
+                                {showPlatformDropdown && (
+                                    <div className="absolute left-0 mt-2 w-48 py-2 bg-white border border-gray-200 rounded-md shadow-lg z-10">
+                                        <Link onClick={togglePlatformDropdown} href="/catalago/netflix">
+                                            <div className="block px-4 py-2 text-gray-800 hover:bg-gray-200 cursor-pointer">Netflix</div>
+                                        </Link>
+                                        <Link onClick={togglePlatformDropdown} href="/catalago/disney-plus">
+                                            <div className="block px-4 py-2 text-gray-800 hover:bg-gray-200 cursor-pointer">Disney Plus</div>
+                                        </Link>
+                                        <Link onClick={togglePlatformDropdown} href="/catalago/amazon-prime-video">
+                                            <div className="block px-4 py-2 text-gray-800 hover:bg-gray-200 cursor-pointer">Amazon Prime Video</div>
+                                        </Link>
+                                        <Link onClick={togglePlatformDropdown} href="/catalago/star-plus">
+                                            <div className="block px-4 py-2 text-gray-800 hover:bg-gray-200 cursor-pointer">Star Plus</div>
+                                        </Link>
+                                        <Link onClick={togglePlatformDropdown} href="/catalago/hbo-max">
+                                            <div className="block px-4 py-2 text-gray-800 hover:bg-gray-200 cursor-pointer">HBO Max</div>
+                                        </Link>
+                                        <Link onClick={togglePlatformDropdown} href="/catalago/apple-tv">
+                                            <div className="block px-4 py-2 text-gray-800 hover:bg-gray-200 cursor-pointer">Apple TV</div>
+                                        </Link>
+                                        {/* Adicione outras plataformas conforme necessário */}
+                                    </div>
+                                )}
+                            </li>
                             <li className="flex items-center relative">
                                 <input
                                     className="rounded-md p-2"
@@ -81,7 +114,7 @@ export const Header = () => {
                                             const title = result.title || result.name;
 
                                             return (
-                                                <Link key={index} href={`/${path}/${title}`}>
+                                                <Link onClick={() => setSearchResults([])} key={index} href={`/${path}/${title}`}>
                                                     <div className="block p-2 hover:bg-gray-200">{title}</div>
                                                 </Link>
                                             );
