@@ -4,6 +4,8 @@ import { Footer } from '@/src/components/Footer';
 import ReactGA from 'react-ga4';
 import StreamingCarousel from '@/src/components/StreamingCarousel';
 import FeaturedStreaming from '@/src/components/FeaturedStreaming';
+import FireTvComponent from '@/src/components/FireTvComponent';
+import EchoComponent from '@/src/components/EchoComponent';
 
 ReactGA.initialize('G-WBBLV0VBLB');
 
@@ -36,7 +38,9 @@ const Catalago = ({ nome }) => {
 
             <Header />
             <StreamingCarousel platform={nome}/>
+            <FireTvComponent />
             <FeaturedStreaming platform={nome}/>
+            <EchoComponent />
             <Footer />
         </div>
     );

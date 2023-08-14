@@ -200,6 +200,9 @@ const FeaturedStreaming = ({ platform, initialPage }) => {
     }
 
     const handleAba = (nome) => {
+        if (contentType === nome) {
+            return
+        }
         setMovies([]);
         setCurrentPage(1);
         setContentType(nome)
