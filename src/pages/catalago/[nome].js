@@ -22,7 +22,7 @@ const Catalago = ({ nome }) => {
         <div>
             <Head>
                 <title>{nome ? `Catálogo - ${formatPlatformName(nome)}` : 'Carregando...'} | Filmes Novos</title>
-                <meta name="description" content={nome ? `Explore os melhores filmes e séries disponíveis na plataforma ${nome}.` : 'Carregando...'} />
+                <meta name="description" content={nome ? `Explore os melhores filmes e séries disponíveis na plataforma ${formatPlatformName(nome)}.` : 'Carregando...'} />
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <meta charSet="utf-8" />
                 <meta property="og:type" content="website" />
@@ -31,7 +31,7 @@ const Catalago = ({ nome }) => {
                 <meta property="og:image:width" content="183" />
                 <meta property="og:image:height" content="224" />
                 <meta property="og:title" content={`Catálogo - ${formatPlatformName(nome)} | Filmes Novos`} />
-                <meta property="og:description" content={`Explore os melhores filmes e séries disponíveis na plataforma ${nome}.`} />
+                <meta property="og:description" content={`Explore os melhores filmes e séries disponíveis na plataforma ${formatPlatformName(nome)}.`} />
 
                 <link rel="icon" href="/favicon.ico" />
             </Head>
