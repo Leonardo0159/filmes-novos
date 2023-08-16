@@ -2,7 +2,7 @@ import { get } from '@/src/services/api';
 
 export default async (req, res) => {
     try {
-        const numberOfPagesToFetch = 25;
+        const numberOfPagesToFetch = 50;
         let movies = [];
         let series = [];
 
