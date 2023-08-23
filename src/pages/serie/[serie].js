@@ -13,7 +13,7 @@ ReactGA.initialize('G-WBBLV0VBLB');
 
 const TMDB_BASE_IMAGE_URL = "https://image.tmdb.org/t/p/original";
 
-const SeriesDetail = ({ serie, trailerKey, watchProviders }) => {
+const SeriesDetail = ({ serie, trailerKey, watchProviders, cast, crew }) => {
 
     function getProviderUrl(providerName) {
         console.log(providerName)
@@ -113,27 +113,30 @@ const SeriesDetail = ({ serie, trailerKey, watchProviders }) => {
                             </div>
                         </div>
 
-                        <div className='mt-6 relative border border-gray-500 rounded-xl p-6 bg-white shadow-lg'>
-                            <h3 className='text-xl md:text-3xl font-bold text-center text-gray-800 absolute -top-6 left-1/2 transform -translate-x-1/2 bg-white px-4'>
-                                Onde posso assistir?
-                            </h3>
-                            {watchProviders && watchProviders.map((provider, index) => (
-                                <a
-                                    href={getProviderUrl(provider.provider_name)}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    key={index}
-                                    className='flex flex-row mt-4 items-center justify-center gap-4 text-xl font-bold mb-4 p-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-md hover:bg-gradient-to-r hover:from-blue-600 hover:to-indigo-700 hover:shadow-lg transform transition-all'
-                                    onClick={() => handleLinkClick(provider.provider_name)}  // Adicione esta linha
-                                >
-                                    Assista agora no: <img
-                                        src={`${TMDB_BASE_IMAGE_URL}${provider.logo_path}`}
-                                        alt={`Imagem de fundo do filme ${serie.name}`}
-                                        className="rounded w-16 h-16"
-                                    />
-                                </a>
-                            ))}
-                        </div>
+                        {watchProviders && watchProviders.length > 0 && (
+                            <div className='mt-6 relative border border-gray-500 rounded-xl p-6 bg-white shadow-lg'>
+                                <h3 className='text-xl md:text-3xl font-bold text-center text-gray-800 absolute -top-6 left-1/2 transform -translate-x-1/2 bg-white px-4'>
+                                    Onde posso assistir?
+                                </h3>
+                                {watchProviders && watchProviders.map((provider, index) => (
+                                    <a
+                                        href={getProviderUrl(provider.provider_name)}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        key={index}
+                                        className='flex flex-row mt-4 items-center justify-center gap-4 text-xl font-bold mb-4 p-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-md hover:bg-gradient-to-r hover:from-blue-600 hover:to-indigo-700 hover:shadow-lg transform transition-all'
+                                        onClick={() => handleLinkClick(provider.provider_name)}  // Adicione esta linha
+                                    >
+                                        Assista agora no: <img
+                                            src={`${TMDB_BASE_IMAGE_URL}${provider.logo_path}`}
+                                            alt={`Imagem de fundo do filme ${serie.name}`}
+                                            className="rounded w-16 h-16"
+                                        />
+                                    </a>
+                                ))}
+                            </div>
+                        )}
+
 
                         <FireTvComponent />
 
@@ -147,6 +150,27 @@ const SeriesDetail = ({ serie, trailerKey, watchProviders }) => {
                                     allowfullscreen
                                     className="mt-8 rounded-lg"
                                 ></iframe>
+                            </div>
+                        )}
+
+                        {cast && cast.length > 0 && (
+                            <div className="mt-6 border border-gray-500 rounded-xl p-6 bg-white shadow-lg">
+                                <h3 className='text-xl md:text-3xl font-bold text-center text-gray-800 mb-4'>
+                                    Elenco Principal
+                                </h3>
+                                <div className='flex flex-wrap gap-6'>
+                                    {cast.slice(0, 10).map(actor => (
+                                        <div key={actor.id} className='flex flex-col items-center'>
+                                            <img
+                                                src={`${TMDB_BASE_IMAGE_URL}${actor.profile_path}`}
+                                                alt={`Foto de ${actor.name}`}
+                                                className="w-24 h-24 object-cover rounded-full mb-2"
+                                            />
+                                            <span className='text-md font-semibold'>{actor.name}</span>
+                                            <span className='text-sm'>{actor.character}</span>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         )}
 
@@ -199,11 +223,18 @@ export async function getServerSideProps(context) {
         ? watchProvidersResponse.results.BR.flatrate
         : [];
 
+    const creditsUrl = `https://api.themoviedb.org/3/tv/${serie.id}/credits?language=pt-BR`;
+    const creditsResponse = await get(creditsUrl);
+    const cast = creditsResponse.cast;
+    const crew = creditsResponse.crew;
+
     return {
         props: {
             serie,
             trailerKey: trailer ? trailer.key : null,
-            watchProviders: watchProviders || null
+            watchProviders: watchProviders || null,
+            cast,
+            crew
         }
     };
 }

@@ -100,6 +100,7 @@ const FeaturedMovies = ({ initialPage }) => {
                                         <h3 className="text-lg font-semibold">{movie.title}</h3>
                                         <p className="text-sm text-gray-500 mt-2">Lançamento: {convertDate(movie.release_date)}</p>
                                         <p className="text-sm text-gray-500 mt-2">Nota: {movie.vote_average}</p>
+                                        <p className="text-sm text-gray-500 mt-2">{movie.overview}</p>
                                     </div>
                                 </div>
                             </Link>

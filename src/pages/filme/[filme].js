@@ -12,7 +12,7 @@ ReactGA.initialize('G-WBBLV0VBLB');
 
 const TMDB_BASE_IMAGE_URL = "https://image.tmdb.org/t/p/original";
 
-const MovieDetail = ({ movie, trailerKey, watchProviders, inTheaters }) => {
+const MovieDetail = ({ movie, trailerKey, watchProviders, inTheaters, cast, crew }) => {
 
     console.log(movie);
 
@@ -157,6 +157,27 @@ const MovieDetail = ({ movie, trailerKey, watchProviders, inTheaters }) => {
                             </div>
                         )}
 
+                        {cast && cast.length > 0 && (
+                            <div className="mt-6 border border-gray-500 rounded-xl p-6 bg-white shadow-lg">
+                                <h3 className='text-xl md:text-3xl font-bold text-center text-gray-800 mb-4'>
+                                    Elenco Principal
+                                </h3>
+                                <div className='flex flex-wrap gap-6'>
+                                    {cast.slice(0, 10).map(actor => (
+                                        <div key={actor.id} className='flex flex-col items-center'>
+                                            <img
+                                                src={`${TMDB_BASE_IMAGE_URL}${actor.profile_path}`}
+                                                alt={`Foto de ${actor.name}`}
+                                                className="w-24 h-24 object-cover rounded-full mb-2"
+                                            />
+                                            <span className='text-md font-semibold'>{actor.name}</span>
+                                            <span className='text-sm'>{actor.character}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
                         <EchoComponent />
 
                         <DisqusComments post={movie} />
@@ -210,12 +231,20 @@ export async function getServerSideProps(context) {
     const nowPlayingResponse = await get(nowPlayingUrl);
     const isPlaying = nowPlayingResponse.results.some(currentMovie => currentMovie.id === movie.id);
 
+    const creditsUrl = `https://api.themoviedb.org/3/movie/${movie.id}/credits?language=pt-BR`;
+    const creditsResponse = await get(creditsUrl);
+    const cast = creditsResponse.cast;
+    const crew = creditsResponse.crew;
+
+
     return {
         props: {
             movie,
             trailerKey: trailer ? trailer.key : null,
             watchProviders: watchProviders || null,
-            inTheaters: isPlaying
+            inTheaters: isPlaying,
+            cast, // adicionado
+            crew  // adicionado
         }
     };
 }

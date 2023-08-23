@@ -101,6 +101,7 @@ const FeaturedSeries = ({ initialPage }) => {
                                         <h3 className="text-lg font-semibold">{serie.name}</h3>
                                         <p className="text-sm text-gray-500 mt-2">Lançamento: {convertDate(serie.first_air_date)}</p>
                                         <p className="text-sm text-gray-500 mt-2">Nota: {serie.vote_average}</p>
+                                        <p className="text-sm text-gray-500 mt-2">{serie.overview}</p>
                                     </div>
                                 </div>
                             </Link>
