@@ -13,6 +13,7 @@ export default function App({ Component, pageProps }) {
           r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
           a.appendChild(r);
       })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');`}}></Script>
+      <Script id='adsterra' strategy="afterInteractive" type='text/javascript' src='//pl21651214.toprevenuegate.com/ba/74/b3/ba74b3c1d64ddd35c38f880ee28978fa.js'></Script>
       <Component {...pageProps} />
     </>
   )
