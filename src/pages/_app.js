@@ -4,6 +4,12 @@ import Script from "next/script";
 export default function App({ Component, pageProps }) {
   return (
     <>
+      <Script id="Adsense-id" async
+        onError={(e) => { console.error("Script failed to load", e); }}
+        strategy="afterInteractive"
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9645579603385719"
+        crossorigin="anonymous"
+      />
       <Script id='Hotjar' strategy="afterInteractive" dangerouslySetInnerHTML={{
         __html: `(function(h,o,t,j,a,r){
           h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
