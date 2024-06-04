@@ -36,6 +36,7 @@ export default function Home() {
         <meta name="twitter:image" content="/FN.png" />
         <meta name="keywords" content="Filmes, Cinema, Novidades, Lançamentos" />
         <link rel="icon" href="/favicon.ico" />
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9645579603385719" crossorigin="anonymous"></script>
         {/* Adicione outras meta tags conforme necessário */}
       </Head>
 
