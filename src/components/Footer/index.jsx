@@ -43,8 +43,8 @@ export const Footer = () => {
                     {/* Contatos */}
                     <div className="w-full md:w-1/4">
                         <h4 className="mb-4 text-gold-500 font-bold">Contato</h4>
-                        <p className="text-sm text-gray-300 mb-2">Email: </p>
-                        <p className="text-sm text-gray-300">Telefone: </p>
+                        <p className="text-sm text-gray-300 mb-2">Email: leo.sn159@gmail.com</p>
+                        <p className="text-sm text-gray-300">Entre em contato para criar seu site!</p>
                     </div>
                 </div>
 
