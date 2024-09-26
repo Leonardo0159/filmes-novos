@@ -47,7 +47,7 @@ const EchoComponent = () => {
                     <a className="bg-blue-500 text-white px-10 py-2 rounded-xl hover:bg-blue-600 transition"
                         target="_blank"
                         rel="noreferrer"
-                        href="https://www.amazon.com.br/s?rh=n%3A17387224011&language=pt_BR&_encoding=UTF8&brr=1&camp=1789&creative=9325&linkCode=ur2&linkId=f95e7d806285826598a84e2d62172fab&rd=1&tag=leonardo045-20"
+                        href="https://amzn.to/3N0LAgV"
                         onClick={handleLinkClick}>Saiba Mais</a>
                 </div>
             </div>
