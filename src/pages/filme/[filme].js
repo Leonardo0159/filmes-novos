@@ -26,7 +26,7 @@ const MovieDetail = ({ movie, trailerKey, watchProviders, inTheaters, cast, crew
             case 'HBO Max':
                 return 'https://www.hbomax.com/';
             case 'Amazon Prime Video':
-                return 'https://www.primevideo.com/?&_encoding=UTF8&tag=leonardo045-20&linkCode=ur2&linkId=7c9e0037a5e3e1b66933e544844fa25a&camp=1789&creative=9325';
+                return 'https://amzn.to/4egLU7v';
             case 'Star Plus':
                 return 'https://www.starplus.com/';
             case 'Paramount Plus':
