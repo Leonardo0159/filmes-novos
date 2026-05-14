@@ -9,7 +9,8 @@ npm install        # install deps
 npm run dev        # http://localhost:3000
 npm run build      # production build
 npm run start      # serve production build
-npm run lint       # next lint (no typecheck — project is plain JS)
+npm run lint       # next lint (no typecheck — TypeScript checked at build time)
+npm run typecheck  # npx tsc --noEmit
 ```
 
 ## Environment
@@ -21,23 +22,26 @@ npm run lint       # next lint (no typecheck — project is plain JS)
 
 | Path | Purpose |
 |------|---------|
+| `src/types/` | Shared TypeScript interfaces (e.g. `tmdb.ts`) |
 | `src/pages/` | Next.js Pages Router — all SSR via `getServerSideProps` |
-| `src/pages/index.js` | Home — carousel, featured movies, FireTV/Echo plugs |
-| `src/pages/filme/[filme].js` | Movie detail page |
-| `src/pages/serie/[serie].js` | TV series detail page |
-| `src/pages/series/index.js` | Series listing |
-| `src/pages/catalago/[nome].js` | Catalog by streaming platform (e.g. `/catalago/netflix`) |
-| `src/pages/api/sitemap.xml.js` | Dynamic sitemap (fetches 50 pages each of popular movies + series from TMDB) |
-| `src/services/api.js` | TMDB API client (Bearer token auth, single `get()` export) |
-| `src/components/*/index.jsx` | Each component is a directory with `index.jsx` |
-| `src/hooks/useScript.js` | Custom hook for dynamic script injection |
+| `src/pages/index.tsx` | Home — carousel, featured movies |
+| `src/pages/filme/[filme].tsx` | Movie detail page |
+| `src/pages/serie/[serie].tsx` | TV series detail page |
+| `src/pages/series/index.tsx` | Series listing |
+| `src/pages/catalago/[nome].tsx` | Catalog by streaming platform (e.g. `/catalago/netflix`) |
+| `src/pages/api/sitemap.xml.ts` | Dynamic sitemap (fetches 50 pages each of popular movies + series from TMDB) |
+| `src/services/api.ts` | TMDB API client (Bearer token auth, single `get()` export) |
+| `src/components/*/index.tsx` | Each component is a directory with `index.tsx` + optional `*.interfaces.ts` |
+| `src/hooks/useScript.ts` | Custom hook for dynamic script injection |
 | `src/styles/globals.css` | Tailwind v4 directives via `@import "tailwindcss"`, `@theme`, custom scrollbar, spinner |
 
 ## Conventions
 
-- **Component files use `.jsx`**; page files use `.js`
-- **Imports**: `@/` maps to project root (`jsconfig.json`), so `import { Header } from '@/src/components/Header'`
-- **All data fetching**: TMDB API via `src/services/api.js` with Bearer token auth
+- **All code is TypeScript** — `.tsx` for components/pages, `.ts` for API routes/hooks/services
+- **Component interfaces go in separate files**: `ComponentName.interfaces.ts` alongside `index.tsx`
+- **Shared types go in `src/types/*.ts`**
+- **Imports**: `@/` maps to project root, so `import { Header } from '@/src/components/Header'`
+- **All data fetching**: TMDB API via `src/services/api.ts` with Bearer token auth
 - **Slugs**: movie/series titles are lowercased, spaces replaced with `-`, URL-encoded
 - **Language**: `pt-BR` for all TMDB queries, site content in Brazilian Portuguese
 - **Tailwind v4**: no `tailwind.config.js`; custom theme values via CSS `@theme` block

@@ -1,14 +1,14 @@
-import FeaturedSeries from '@/src/components/FeaturedSeries'
-import { Footer } from '@/src/components/Footer'
-import { Header } from '@/src/components/Header'
-import SeriesCarouselBanner from '@/src/components/SeriesCarouselBanner'
-import Head from 'next/head'
+import Head from 'next/head';
+import { Header } from '../components/Header';
+import { Footer } from '../components/Footer';
+import CarouselBanner from '../components/CarouselBanner';
+import FeaturedMovies from '../components/FeaturedMovies';
 
-export default function Series() {
+export default function Home() {
   return (
     <div className="min-h-screen bg-cinema-900">
       <Head>
-        <title>Séries | Filmes Novos</title>
+        <title>Filmes Novos | Descubra os lançamentos mais recentes do cinema</title>
         <meta name="description" content="Filmes Novos traz para você os lançamentos mais recentes do cinema. Navegue por nossos destaques e descubra os melhores filmes para assistir." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta charSet="utf-8" />
@@ -29,9 +29,9 @@ export default function Series() {
       </Head>
 
       <Header />
-      <SeriesCarouselBanner />
-      <FeaturedSeries />
+      <CarouselBanner />
+      <FeaturedMovies />
       <Footer />
     </div>
-  )
+  );
 }

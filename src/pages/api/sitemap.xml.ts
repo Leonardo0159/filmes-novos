@@ -1,32 +1,43 @@
 import { get } from '@/src/services/api';
+import type { NextApiRequest, NextApiResponse } from 'next';
 
-export default async (req, res) => {
+interface TMDBItem {
+  id: number;
+  title?: string;
+  name?: string;
+}
+
+interface TMDBResponse {
+  results: TMDBItem[];
+}
+
+export default async (req: NextApiRequest, res: NextApiResponse) => {
     try {
         const numberOfPagesToFetch = 50;
-        let movies = [];
-        let series = [];
+        let movies: TMDBItem[] = [];
+        let series: TMDBItem[] = [];
 
-        // Fetch popular movies
         for (let i = 1; i <= numberOfPagesToFetch; i++) {
-            const movieResponse = await get(`https://api.themoviedb.org/3/movie/popular?language=pt-BR&page=${i}`);
-            movies = movies.concat(movieResponse.results);
+            const movieResponse = await get(`https://api.themoviedb.org/3/movie/popular?language=pt-BR&page=${i}`) as TMDBResponse | null;
+            if (movieResponse?.results) {
+              movies = movies.concat(movieResponse.results);
+            }
         }
 
-        // Fetch popular series
         for (let i = 1; i <= numberOfPagesToFetch; i++) {
-            const seriesResponse = await get(`https://api.themoviedb.org/3/tv/popular?language=pt-BR&page=${i}`);
-            series = series.concat(seriesResponse.results);
+            const seriesResponse = await get(`https://api.themoviedb.org/3/tv/popular?language=pt-BR&page=${i}`) as TMDBResponse | null;
+            if (seriesResponse?.results) {
+              series = series.concat(seriesResponse.results);
+            }
         }
 
-        // Define the base URL for your site
         const baseUrl = 'https://filmesnovos.com.br';
 
-        // Create the sitemap XML
         const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     ${movies
                 .map(movie => {
-                    const slug = encodeURIComponent(movie.title.toLowerCase().replace(/ /g, '-'));
+                    const slug = encodeURIComponent((movie.title ?? '').toLowerCase().replace(/ /g, '-'));
                     return `
                 <url>
                     <loc>${baseUrl}/filme/${slug}</loc>
@@ -39,7 +50,7 @@ export default async (req, res) => {
                 .join('')}
     ${series
                 .map(serie => {
-                    const slug = encodeURIComponent(serie.name.toLowerCase().replace(/ /g, '-'));
+                    const slug = encodeURIComponent((serie.name ?? '').toLowerCase().replace(/ /g, '-'));
                     return `
                 <url>
                     <loc>${baseUrl}/serie/${slug}</loc>
@@ -53,12 +64,11 @@ export default async (req, res) => {
 </urlset>
 `;
 
-        // Set the content type as XML and send the sitemap
         res.setHeader('Content-Type', 'text/xml');
         res.write(sitemap);
         res.end();
-    } catch (e) {
-        res.statusCode = 500;
+    } catch {
+        res.status(500);
         res.end();
     }
 };
