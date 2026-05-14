@@ -22,9 +22,11 @@ const FeaturedMovies = ({ initialPage }) => {
     }, [router.isReady, router.query.pagina]);
 
     useEffect(() => {
+        let cancelled = false;
         const fetchMovies = async () => {
             setIsLoading(true)
             const data = await get(`https://api.themoviedb.org/3/movie/popular?language=pt-BR&page=${currentPage}`);
+            if (cancelled) return;
             if (data && data.results) {
                 setMovies(data.results.slice(0, 20));
                 setTotalPages(data.total_pages);
@@ -32,6 +34,7 @@ const FeaturedMovies = ({ initialPage }) => {
             setIsLoading(false);
         };
         fetchMovies();
+        return () => { cancelled = true; };
     }, [currentPage]);
 
     useEffect(() => {

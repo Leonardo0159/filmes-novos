@@ -10,7 +10,7 @@ ReactGA.initialize('G-WBBLV0VBLB');
 
 const TMDB_BASE_IMAGE_URL = "https://image.tmdb.org/t/p/original";
 
-const MovieDetail = ({ movie, trailerKey, watchProviders, inTheaters, cast, crew }) => {
+const MovieDetail = ({ movie, trailerKey, watchProviders, inTheaters, cast }) => {
 
     function getProviderUrl(providerName) {
         switch (providerName) {
@@ -219,8 +219,7 @@ export async function getServerSideProps(context) {
     const trailer = trailerResponse?.results?.find(video => video.type === "Trailer" && video.site === "YouTube");
     const watchProviders = watchProvidersResponse?.results?.BR?.flatrate || [];
     const isPlaying = nowPlayingResponse?.results?.some(m => m.id === movie.id);
-    const cast = creditsResponse?.cast || [];
-    const crew = creditsResponse?.crew || [];
+    const cast = (creditsResponse?.cast || []).slice(0, 10).map(({ id, name, character, profile_path }) => ({ id, name, character, profile_path }));
 
     return {
         props: {
@@ -229,7 +228,6 @@ export async function getServerSideProps(context) {
             watchProviders,
             inTheaters: isPlaying || false,
             cast,
-            crew
         }
     };
 }

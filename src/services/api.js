@@ -14,10 +14,8 @@ export const get = async (url) => {
         if (response.ok) {
             return await response.json();
         }
-        console.error(`Error with response: ${response.statusText}`);
         return null;
     } catch (err) {
-        console.error(err);
         return null;
     }
 };
