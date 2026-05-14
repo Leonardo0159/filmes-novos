@@ -38,11 +38,9 @@ const StreamingCarousel = ({ platform }: StreamingCarouselProps) => {
     if (platformId) {
       setIsLoading(true);
       Promise.all([
-        get(`https://api.themoviedb.org/3/discover/movie?language=pt-BR&page=1&with_watch_providers=${platformId}&watch_region=BR`),
-        get(`https://api.themoviedb.org/3/discover/tv?language=pt-BR&page=1&with_watch_providers=${platformId}&watch_region=BR`)
-      ]).then(([movieRes, seriesRes]) => {
-        const movieData = movieRes as { results: ContentItem[] } | null;
-        const seriesData = seriesRes as { results: ContentItem[] } | null;
+        get<{ results: ContentItem[] }>(`https://api.themoviedb.org/3/discover/movie?language=pt-BR&page=1&with_watch_providers=${platformId}&watch_region=BR`),
+        get<{ results: ContentItem[] }>(`https://api.themoviedb.org/3/discover/tv?language=pt-BR&page=1&with_watch_providers=${platformId}&watch_region=BR`)
+      ]).then(([movieData, seriesData]) => {
         if (movieData && movieData.results && seriesData && seriesData.results) {
           setMovies(movieData.results.slice(0, 5));
           setSeries(seriesData.results.slice(0, 5));

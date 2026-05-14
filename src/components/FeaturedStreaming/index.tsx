@@ -39,11 +39,10 @@ const FeaturedStreaming = ({ platform, initialPage }: FeaturedStreamingProps) =>
 
     if (platformId) {
       setIsLoading(true);
-      get(`https://api.themoviedb.org/3/discover/${contentType}?language=pt-BR&page=${currentPage}&with_watch_providers=${platformId}&watch_region=BR`)
-        .then((res) => {
-          const data = res as TMDBPaginatedResponse | null;
+      get<TMDBPaginatedResponse<ContentItem>>(`https://api.themoviedb.org/3/discover/${contentType}?language=pt-BR&page=${currentPage}&with_watch_providers=${platformId}&watch_region=BR`)
+        .then((data) => {
           if (data && data.results) {
-            setItems((data.results as ContentItem[]).slice(0, 20));
+            setItems(data.results.slice(0, 20));
             setTotalPages(data.total_pages);
           }
           setIsLoading(false);

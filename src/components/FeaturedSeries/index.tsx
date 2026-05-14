@@ -27,9 +27,9 @@ const FeaturedSeries = ({ initialPage }: FeaturedSeriesProps) => {
   useEffect(() => {
     const fetchSeries = async () => {
       setIsLoading(true);
-      const data = await get(`https://api.themoviedb.org/3/tv/popular?language=pt-BR&page=${currentPage}`) as TMDBPaginatedResponse | null;
+      const data = await get<TMDBPaginatedResponse<TMDBSeries>>(`https://api.themoviedb.org/3/tv/popular?language=pt-BR&page=${currentPage}`);
       if (data && data.results) {
-        setSeries(data.results as TMDBSeries[]);
+        setSeries(data.results);
         setTotalPages(data.total_pages);
       }
       setIsLoading(false);

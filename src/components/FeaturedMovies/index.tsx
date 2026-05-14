@@ -28,10 +28,10 @@ const FeaturedMovies = ({ initialPage }: FeaturedMoviesProps) => {
     let cancelled = false;
     const fetchMovies = async () => {
       setIsLoading(true);
-      const data = await get(`https://api.themoviedb.org/3/movie/popular?language=pt-BR&page=${currentPage}`) as TMDBPaginatedResponse | null;
+      const data = await get<TMDBPaginatedResponse<TMDBMovie>>(`https://api.themoviedb.org/3/movie/popular?language=pt-BR&page=${currentPage}`);
       if (cancelled) return;
       if (data && data.results) {
-        setMovies((data.results as TMDBMovie[]).slice(0, 20));
+        setMovies(data.results.slice(0, 20));
         setTotalPages(data.total_pages);
       }
       setIsLoading(false);

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Logo } from '@/src/components/Logo';
 import type {} from './Footer.interfaces';
 
 export const Footer = () => {
@@ -10,7 +11,7 @@ export const Footer = () => {
           <div>
             <Link href="/">
               <div className="cursor-pointer inline-block mb-4">
-                <span className="text-2xl font-bold text-gold-500">Filmes Novos</span>
+                <Logo variant="footer" />
               </div>
             </Link>
             <p className="text-sm text-gray-400 leading-relaxed">

@@ -2,8 +2,9 @@ import { get } from "@/src/services/api";
 import Link from "next/link";
 import { useState } from "react";
 import { FaBars, FaSearch, FaAngleDown, FaTimes } from 'react-icons/fa';
+import { Logo } from '@/src/components/Logo';
 
-import type { SearchResult, PlatformLink } from './Header.interfaces';
+import type { SearchResult, SearchApiItem, PlatformLink } from './Header.interfaces';
 
 const platforms: PlatformLink[] = [
   { name: 'Amazon Prime Video', path: 'amazon-prime-video' },
@@ -35,15 +36,13 @@ export const Header = () => {
       const queryParam = e.target.value;
 
       const searchMoviesUrl = `https://api.themoviedb.org/3/search/movie?language=pt-BR&query=${queryParam}`;
-      const moviesResponse = await get(searchMoviesUrl);
+      const moviesData = await get<{ results: SearchApiItem[] }>(searchMoviesUrl);
 
       const searchSeriesUrl = `https://api.themoviedb.org/3/search/tv?language=pt-BR&query=${queryParam}`;
-      const seriesResponse = await get(searchSeriesUrl);
+      const seriesData = await get<{ results: SearchApiItem[] }>(searchSeriesUrl);
 
-      const moviesData = moviesResponse as { results: Record<string, unknown>[] } | null;
-      const seriesData = seriesResponse as { results: Record<string, unknown>[] } | null;
-      const moviesWithLabel: SearchResult[] = (moviesData?.results ?? []).map(movie => ({ ...movie, type: 'movie' } as unknown as SearchResult));
-      const seriesWithLabel: SearchResult[] = (seriesData?.results ?? []).map(serie => ({ ...serie, type: 'series' } as unknown as SearchResult));
+      const moviesWithLabel: SearchResult[] = (moviesData?.results ?? []).map(movie => ({ ...movie, poster_path: movie.poster_path ?? undefined, type: 'movie' as const }));
+      const seriesWithLabel: SearchResult[] = (seriesData?.results ?? []).map(serie => ({ ...serie, poster_path: serie.poster_path ?? undefined, type: 'series' as const }));
 
       const combinedResults = [...moviesWithLabel, ...seriesWithLabel];
       const sortedResults = combinedResults.sort((a, b) => b.popularity - a.popularity);
@@ -58,9 +57,7 @@ export const Header = () => {
       <nav className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/">
-            <div className="flex items-center gap-2 cursor-pointer group">
-              <span className="text-2xl font-bold text-gold-500 group-hover:text-gold-600 transition-colors">Filmes Novos</span>
-            </div>
+            <Logo />
           </Link>
 
           <button onClick={openMenu} type="button" className="inline-flex items-center p-2 rounded-lg md:hidden text-gold-500 hover:bg-cinema-700 focus:outline-none transition-colors">

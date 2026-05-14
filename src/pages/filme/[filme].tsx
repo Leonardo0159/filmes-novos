@@ -234,7 +234,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext): Pr
   const { filme } = context.params as { filme: string };
 
   const searchUrl = `https://api.themoviedb.org/3/search/movie?language=pt-BR&query=${filme}`;
-  const response = await get(searchUrl) as SearchResponse | null;
+  const response = await get<SearchResponse>(searchUrl);
 
   if (!response?.results?.length) {
     return { props: { movie: null, trailerKey: null, watchProviders: [], inTheaters: false, cast: [] } };
@@ -243,10 +243,10 @@ export async function getServerSideProps(context: GetServerSidePropsContext): Pr
   const movie = response.results[0];
 
   const [trailerResponse, watchProvidersResponse, nowPlayingResponse, creditsResponse] = await Promise.all([
-    get(`https://api.themoviedb.org/3/movie/${movie.id}/videos?language=pt-BR`) as Promise<VideosResponse | null>,
-    get(`https://api.themoviedb.org/3/movie/${movie.id}/watch/providers?language=pt-BR`) as Promise<WatchProvidersResponse | null>,
-    get(`https://api.themoviedb.org/3/movie/now_playing?language=pt-BR&page=1`) as Promise<NowPlayingResponse | null>,
-    get(`https://api.themoviedb.org/3/movie/${movie.id}/credits?language=pt-BR`) as Promise<CreditsResponse | null>,
+    get<VideosResponse>(`https://api.themoviedb.org/3/movie/${movie.id}/videos?language=pt-BR`),
+    get<WatchProvidersResponse>(`https://api.themoviedb.org/3/movie/${movie.id}/watch/providers?language=pt-BR`),
+    get<NowPlayingResponse>(`https://api.themoviedb.org/3/movie/now_playing?language=pt-BR&page=1`),
+    get<CreditsResponse>(`https://api.themoviedb.org/3/movie/${movie.id}/credits?language=pt-BR`),
   ]);
 
   const trailer = trailerResponse?.results?.find((video: TMDBVideo) => video.type === "Trailer" && video.site === "YouTube");

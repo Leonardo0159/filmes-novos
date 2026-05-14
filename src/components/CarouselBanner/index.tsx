@@ -23,8 +23,7 @@ const CarouselBanner = () => {
   };
 
   useEffect(() => {
-    get(`https://api.themoviedb.org/3/movie/now_playing?language=pt-BR&page=1`).then((res) => {
-      const data = res as CarouselResponse | null;
+    get<CarouselResponse>(`https://api.themoviedb.org/3/movie/now_playing?language=pt-BR&page=1`).then((data) => {
       if (data && data.results) {
         const sorted = data.results
           .sort((a, b) => new Date(b.release_date).getTime() - new Date(a.release_date).getTime())

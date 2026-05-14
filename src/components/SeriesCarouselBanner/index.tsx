@@ -23,8 +23,7 @@ const SeriesCarouselBanner = () => {
   };
 
   useEffect(() => {
-    get(`https://api.themoviedb.org/3/tv/on_the_air?language=pt-BR&page=1`).then((res) => {
-      const data = res as SeriesResponse | null;
+    get<SeriesResponse>(`https://api.themoviedb.org/3/tv/on_the_air?language=pt-BR&page=1`).then((data) => {
       if (data && data.results) {
         const sorted = data.results
           .sort((a, b) => new Date(b.first_air_date).getTime() - new Date(a.first_air_date).getTime())

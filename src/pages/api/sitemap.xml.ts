@@ -20,12 +20,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         const pageRange = Array.from({ length: numberOfPagesToFetch }, (_, i) => i + 1);
 
         const movieResponses = await Promise.all(
-            pageRange.map(i => get(`https://api.themoviedb.org/3/movie/popular?language=pt-BR&page=${i}`) as Promise<TMDBResponse | null>)
+            pageRange.map(i => get<TMDBResponse>(`https://api.themoviedb.org/3/movie/popular?language=pt-BR&page=${i}`))
         );
         movies = movieResponses.flatMap(r => r?.results ?? []);
 
         const seriesResponses = await Promise.all(
-            pageRange.map(i => get(`https://api.themoviedb.org/3/tv/popular?language=pt-BR&page=${i}`) as Promise<TMDBResponse | null>)
+            pageRange.map(i => get<TMDBResponse>(`https://api.themoviedb.org/3/tv/popular?language=pt-BR&page=${i}`))
         );
         series = seriesResponses.flatMap(r => r?.results ?? []);
 
