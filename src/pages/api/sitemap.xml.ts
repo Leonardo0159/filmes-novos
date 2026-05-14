@@ -17,19 +17,17 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         let movies: TMDBItem[] = [];
         let series: TMDBItem[] = [];
 
-        for (let i = 1; i <= numberOfPagesToFetch; i++) {
-            const movieResponse = await get(`https://api.themoviedb.org/3/movie/popular?language=pt-BR&page=${i}`) as TMDBResponse | null;
-            if (movieResponse?.results) {
-              movies = movies.concat(movieResponse.results);
-            }
-        }
+        const pageRange = Array.from({ length: numberOfPagesToFetch }, (_, i) => i + 1);
 
-        for (let i = 1; i <= numberOfPagesToFetch; i++) {
-            const seriesResponse = await get(`https://api.themoviedb.org/3/tv/popular?language=pt-BR&page=${i}`) as TMDBResponse | null;
-            if (seriesResponse?.results) {
-              series = series.concat(seriesResponse.results);
-            }
-        }
+        const movieResponses = await Promise.all(
+            pageRange.map(i => get(`https://api.themoviedb.org/3/movie/popular?language=pt-BR&page=${i}`) as Promise<TMDBResponse | null>)
+        );
+        movies = movieResponses.flatMap(r => r?.results ?? []);
+
+        const seriesResponses = await Promise.all(
+            pageRange.map(i => get(`https://api.themoviedb.org/3/tv/popular?language=pt-BR&page=${i}`) as Promise<TMDBResponse | null>)
+        );
+        series = seriesResponses.flatMap(r => r?.results ?? []);
 
         const baseUrl = 'https://filmesnovos.com.br';
 
@@ -65,6 +63,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 `;
 
         res.setHeader('Content-Type', 'text/xml');
+        res.setHeader('Cache-Control', 's-maxage=86400, stale-while-revalidate');
         res.write(sitemap);
         res.end();
     } catch {
