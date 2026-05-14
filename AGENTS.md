@@ -67,6 +67,10 @@ npm run typecheck  # npx tsc --noEmit
 
 - Disqus comments — on movie/series detail pages via `DisqusComments` component
 
+## Language
+
+All agents must respond in **Brazilian Portuguese (pt-BR)**. Never use English unless the user explicitly asks.
+
 ## Agents
 
 Specialized subagents are defined in `.opencode/agents/`:
