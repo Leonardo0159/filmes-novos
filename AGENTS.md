@@ -71,6 +71,8 @@ npm run typecheck  # npx tsc --noEmit
 
 All agents must respond in **Brazilian Portuguese (pt-BR)**. Never use English unless the user explicitly asks.
 
+All **code, types, interfaces, comments, commit messages, tests, and any other system artifact** must be in **English**. Only user-facing UI content (page titles, descriptions, metadata) stays in Portuguese.
+
 ## Agents
 
 Specialized subagents are defined in `.opencode/agents/`:
