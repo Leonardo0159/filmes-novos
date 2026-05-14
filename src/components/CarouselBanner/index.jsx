@@ -2,10 +2,9 @@ import { get } from '@/src/services/api';
 import React, { useEffect, useState } from 'react';
 import Slider from "react-slick";
 import Link from 'next/link';
-import { FaImage } from 'react-icons/fa';
-import Image from 'next/image';
+import { FaStar } from 'react-icons/fa';
 
-const TMDB_BASE_IMAGE_URL = "https://image.tmdb.org/t/p/original"; // Base URL para imagens do TMDB
+const TMDB_BASE_IMAGE_URL = "https://image.tmdb.org/t/p/original";
 
 const CarouselBanner = () => {
     const [movies, setMovies] = useState([]);
@@ -16,75 +15,68 @@ const CarouselBanner = () => {
         infinite: true,
         slidesToShow: 1,
         slidesToScroll: 1,
-        adaptiveHeight: true,
         autoplay: true,
-        autoplaySpeed: 5000
+        autoplaySpeed: 6000,
+        pauseOnHover: true,
+        dotsClass: "slick-dots custom-dots",
     };
 
     useEffect(() => {
         get(`https://api.themoviedb.org/3/movie/now_playing?language=pt-BR&page=1`).then((res) => {
             if (res && res.results) {
-                const sortedMovies = res.results
+                const sorted = res.results
                     .sort((a, b) => new Date(b.release_date) - new Date(a.release_date))
-                    .slice(0, 10);
-                setMovies(sortedMovies);
+                    .slice(0, 8);
+                setMovies(sorted);
                 setIsLoading(false);
             }
         })
     }, []);
 
     function convertDate(dateString) {
-        if (!dateString) {
-            return '';
-        }
+        if (!dateString) return '';
         const [year, month, day] = dateString.split('-');
-        const formattedDate = `${day}/${month}/${year}`;
-        return formattedDate;
+        return `${day}/${month}/${year}`;
     }
 
     const renderSkeleton = () => (
-        <div className="animate-pulse">
-            <div className="h-[40rem] w-full bg-gray-400 rounded flex justify-center items-center">
-                <FaImage size={50} className="text-gray-500" /> {/* Ícone representando a imagem */}
-            </div>
-            <div className="p-4 mt-4 space-y-4">
-                <div className="h-6 bg-gray-400 rounded w-1/2"></div>
-                <div className="h-4 bg-gray-400 rounded"></div>
-                <div className="h-4 bg-gray-400 rounded w-1/3"></div>
-            </div>
-        </div>
+        <div className="h-[30rem] md:h-[40rem] w-full skeleton-pulse rounded-none" />
     );
 
     return (
-        <div className="overflow-x-hidden overflow-y-hidden">
-            <Slider {...settings} style={{ maxWidth: '100vw' }}>
+        <div className="overflow-hidden mt-16">
+            <Slider {...settings}>
                 {isLoading ? (
-                    Array(10).fill(0).map((_, idx) => <div key={idx}>{renderSkeleton()}</div>)
+                    Array(3).fill(0).map((_, idx) => <div key={idx}>{renderSkeleton()}</div>)
                 ) : (
-                    movies.map((movie) => (
+                    movies.map((movie, idx) => (
                         <article key={movie.id} className="relative">
-                            <div className="h-[40rem] w-full relative overflow-hidden">
-                                <Image
-                                    src={window.innerWidth >= 768
-                                        ? `${TMDB_BASE_IMAGE_URL}${movie.backdrop_path}`
-                                        : `${TMDB_BASE_IMAGE_URL}${movie.poster_path}`}
-                                    alt={`Imagem promocional do filme ${movie.title}`}
-                                    layout="fill"
-                                    objectFit="cover"
-                                    loading="lazy"  // Lazy loading
+                            <div className="h-[30rem] md:h-[40rem] w-full relative overflow-hidden">
+                                <img
+                                    src={`${TMDB_BASE_IMAGE_URL}${movie.backdrop_path}`}
+                                    alt={movie.title}
+                                    className="w-full h-full object-cover"
                                 />
+                                <div className="absolute inset-0 bg-gradient-to-t from-cinema-900 via-cinema-900/40 to-transparent" />
+                                <div className="absolute inset-0 bg-gradient-to-r from-cinema-900/80 via-transparent to-transparent" />
                             </div>
-                            <div className="absolute inset-0 flex items-center justify-center w-1/2">
-                                <div className="bg-black p-4 text-white flex flex-col gap-4 rounded-2xl opacity-90">
-                                    <h2 className="text-2xl font-bold">{movie.title}</h2>
-                                    <p className="lg:block hidden">{movie.overview}</p>
-                                    <time dateTime={movie.release_date}>Lançamento: {convertDate(movie.release_date)}</time>
-                                    <p>Nota: {movie.vote_average}</p>
-                                    <Link href={`/filme/${encodeURIComponent(movie.title.toLowerCase().replace(/ /g, '-'))}`}>
-                                        <button className="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
-                                            Ver detalhes
-                                        </button>
-                                    </Link>
+                            <div className="absolute bottom-0 left-0 right-0 p-6 md:p-16">
+                                <div className="max-w-screen-xl mx-auto">
+                                    <div className="max-w-xl animate-fade-in-up" style={{ animationDelay: `${idx * 0.1}s` }}>
+                                        <div className="flex items-center gap-3 mb-3">
+                                            <span className="flex items-center gap-1 text-gold-500 text-sm font-semibold">
+                                                <FaStar className="text-gold-500" /> {movie.vote_average?.toFixed(1)}
+                                            </span>
+                                            <span className="text-gray-400 text-sm">{convertDate(movie.release_date)}</span>
+                                        </div>
+                                        <h2 className="text-4xl md:text-6xl font-bold text-white mb-3">{movie.title}</h2>
+                                        <p className="text-gray-300 text-sm md:text-base line-clamp-2 md:line-clamp-3 mb-6 leading-relaxed">{movie.overview}</p>
+                                        <Link href={`/filme/${encodeURIComponent(movie.title.toLowerCase().replace(/ /g, '-'))}`}>
+                                            <button className="btn-gold px-8 py-3 rounded-lg text-lg">
+                                                Ver detalhes
+                                            </button>
+                                        </Link>
+                                    </div>
                                 </div>
                             </div>
                         </article>

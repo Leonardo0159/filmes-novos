@@ -2,8 +2,17 @@
 const nextConfig = {
   reactStrictMode: true,
 
+  turbopack: {
+    root: process.cwd(),
+  },
+
   images: {
-    domains: ['image.tmdb.org'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'image.tmdb.org',
+      },
+    ],
   },
 
   async rewrites() {
@@ -12,7 +21,6 @@ const nextConfig = {
         source: '/sitemap.xml',
         destination: '/api/sitemap.xml',
       },
-      // ...outras regras de reescrita se necessário
     ];
   },
 };
