@@ -41,6 +41,7 @@ npm run typecheck  # npx tsc --noEmit
 - **Component interfaces go in separate files**: `ComponentName.interfaces.ts` alongside `index.tsx`
 - **Shared types go in `src/types/*.ts`**
 - **Imports**: `@/` maps to project root, so `import { Header } from '@/src/components/Header'`
+- **No `any` or `unknown`** — always create explicit interfaces/types. The generic `get<T>()` and `TMDBPaginatedResponse<T>` eliminate the need for `as` casts and `unknown`.
 - **All data fetching**: TMDB API via `src/services/api.ts` with Bearer token auth
 - **Slugs**: movie/series titles are lowercased, spaces replaced with `-`, URL-encoded
 - **Language**: `pt-BR` for all TMDB queries, site content in Brazilian Portuguese
@@ -82,6 +83,17 @@ Specialized subagents are defined in `.opencode/agents/`:
 | `frontend` | UI components, styling, Tailwind, design system, layout, responsiveness, animations |
 
 Before starting a frontend task, delegate to the `frontend` subagent via `task` with `subagent_type: "frontend"`.
+
+## Commits
+
+Follow conventional commits (`feat`, `fix`, `docs`, `chore`, `refactor`, `test`, `style`). Keep messages short and direct.
+
+When multiple changes of different types exist, split into separate commits (one per type). Example:
+
+```
+feat: type api client and TMDB response as generics
+docs: update architecture docs with new conventions
+```
 
 ## Scripts
 

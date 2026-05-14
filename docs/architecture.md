@@ -3,13 +3,14 @@
 ## Stack
 
 | Tecnologia | Versão | Uso |
-|---|---|---|
+|---|---|---|---|
 | Next.js | 16.2.6 | Framework (Pages Router) |
 | React | 19.2.6 | UI |
 | TypeScript | 6.0.3 | Tipagem |
 | Tailwind CSS | 4.3.0 | Estilização (`@tailwindcss/postcss`) |
 | PostCSS | 8.5.14 | Processamento CSS |
 | Turbopack | — | Bundler dev |
+| Node.js | >=20.x | Runtime (via `"engines"` no package.json) |
 
 ### Dependências
 
@@ -23,8 +24,13 @@
 ## Estrutura de Diretórios
 
 ```
+├── next.config.js               # Config Next.js: rewrites, images, reactStrictMode
+├── postcss.config.js            # Plugin @tailwindcss/postcss + autoprefixer
+├── .env.example                 # Template de variáveis de ambiente
+├── tsconfig.json                # strict: false, path alias @/
+│
 src/
-├── components/      # Cada componente em pasta própria: Nome/index.tsx + Nome.interfaces.ts
+├── components/                  # Cada componente em pasta própria: Nome/index.tsx + Nome.interfaces.ts
 │   ├── CarouselBanner/          # Carrossel de filmes em cartaz (now_playing)
 │   ├── SeriesCarouselBanner/    # Carrossel de séries no ar (on_the_air)
 │   ├── StreamingCarousel/       # Carrossel misto por plataforma
@@ -33,9 +39,12 @@ src/
 │   ├── FeaturedStreaming/       # Grid paginado por plataforma com toggle F/S
 │   ├── Header/                  # Nav fixa com busca, dropdown catálogo, menu mobile
 │   ├── Footer/                  # Grid 3 colunas: logo, links, contato
+│   ├── Logo/                    # Logo SVG do site
 │   ├── Pagination/              # Navegação com elipses e scroll suave
 │   └── DisqusComments/          # Embed de comentários Disqus
 ├── pages/
+│   ├── _app.tsx                 # Layout global (importa CSS, slick-carousel)
+│   ├── _document.tsx            # Document HTML (fonts Google, lang pt)
 │   ├── index.tsx                # Home: header + CarouselBanner + FeaturedMovies + footer
 │   ├── filme/[filme].tsx        # Detalhe do filme (SSR)
 │   ├── serie/[serie].tsx        # Detalhe da série (SSR)
@@ -43,13 +52,13 @@ src/
 │   ├── catalago/[nome].tsx      # Catálogo por plataforma (SSR parcial)
 │   └── api/sitemap.xml.ts       # Sitemap dinâmico
 ├── services/
-│   └── api.ts                   # Cliente TMDB (Bearer token, get())
+│   └── api.ts                   # Cliente TMDB (Bearer token, get<T>())
 ├── hooks/
 │   └── useScript.ts             # Hook para script injection (não utilizado atualmente)
 ├── styles/
 │   └── globals.css              # Tailwind v4 (@theme), glass, btn-gold, animações
 └── types/
-    └── tmdb.ts                  # Interfaces: TMDBMovie, TMDBSeries, TMDBGenre, etc.
+    └── tmdb.ts                  # Interfaces: TMDBMovie, TMDBSeries, TMDBGenre, TMDBPaginatedResponse<T>
 ```
 
 ---
@@ -60,7 +69,7 @@ src/
 
 **Cliente** (`src/services/api.ts`):
 ```typescript
-get(url: string): Promise<unknown>  // retorna null em erro
+get<T>(url: string): Promise<T | null>  // genérico, sem unknown
 ```
 
 ### Endpoints usados
@@ -88,7 +97,7 @@ Base URL: `https://image.tmdb.org/t/p/{tamanho}`
 
 Tamanhos usados: `original`, `w500`, `w92`
 
-> Usa-se `<img>` e não `next/image` para evitar configurar domínios dinâmicos.
+> Usa-se `<img>` atualmente; `next/image` poderia ser usado pois `remotePatterns` já está configurado em `next.config.js` para `image.tmdb.org`, mas mantém-se `<img>` por simplicidade.
 
 ---
 
@@ -164,6 +173,8 @@ Paginação com shallow routing: `router.push({ query: { pagina: n } }, undefine
 - **Convenção:** interfaces em arquivo separado `ComponentName.interfaces.ts`
 - **Path alias:** `@/` → raiz do projeto
 - **Strict mode TS:** desligado (`strict: false`)
-- **Tipagem:** via `as` (type assertion), não generics
+- **React Strict Mode:** ligado (`reactStrictMode: true` em `next.config.js`)
+- **Tipagem:** via genéricos (`get<T>()`, `TMDBPaginatedResponse<T>`), sem `as` ou `unknown`
+- **Proibido `any` e `unknown`** — toda tipagem deve ser explícita com interfaces
 - **useScript.ts:** existe mas não é usado em nenhum componente
 - **Sem testes:** nenhum test runner configurado
