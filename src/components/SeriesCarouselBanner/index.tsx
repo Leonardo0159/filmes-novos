@@ -1,8 +1,9 @@
 import { get } from '@/src/services/api';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Slider from "react-slick";
 import Link from 'next/link';
 import { FaStar } from 'react-icons/fa';
+import { getSerieUrl } from '@/src/utils/navigation';
 import type { TMDBSeries } from '@/src/types/tmdb';
 import type { SeriesResponse } from './SeriesCarouselBanner.interfaces';
 const TMDB_BASE_IMAGE_URL = "https://image.tmdb.org/t/p/original";
@@ -72,10 +73,9 @@ const SeriesCarouselBanner = () => {
                     </div>
                     <h2 className="text-4xl md:text-6xl font-bold text-white mb-3">{serie.name}</h2>
                     <p className="text-gray-300 text-sm md:text-base line-clamp-2 md:line-clamp-3 mb-6 leading-relaxed">{serie.overview}</p>
-                    <Link href={`/serie/${encodeURIComponent(serie.name.toLowerCase().replace(/ /g, '-'))}`}>
-                      <button className="btn-gold px-8 py-3 rounded-lg text-lg">
+                    <Link href={getSerieUrl(serie.name)}
+                      className="btn-gold inline-block px-8 py-3 rounded-lg text-lg text-center">
                         Ver detalhes
-                      </button>
                     </Link>
                   </div>
                 </div>

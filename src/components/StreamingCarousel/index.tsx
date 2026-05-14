@@ -1,8 +1,9 @@
 import { get } from '@/src/services/api';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Slider from "react-slick";
 import Link from 'next/link';
 import { FaStar } from 'react-icons/fa';
+import { getContentUrl } from '@/src/utils/navigation';
 import type { StreamingCarouselProps, ContentItem, PlatformInfo } from './StreamingCarousel.interfaces';
 
 const TMDB_BASE_IMAGE_URL = "https://image.tmdb.org/t/p/original";
@@ -95,10 +96,9 @@ const StreamingCarousel = ({ platform }: StreamingCarouselProps) => {
                       </div>
                       <h2 className="text-4xl md:text-6xl font-bold text-white mb-3">{title}</h2>
                       <p className="text-gray-300 text-sm md:text-base line-clamp-2 md:line-clamp-3 mb-6 leading-relaxed">{content.overview}</p>
-                      <Link href={`/${isMovie ? "filme" : "serie"}/${encodeURIComponent(title.toLowerCase().replace(/ /g, '-'))}`}>
-                        <button className="btn-gold px-8 py-3 rounded-lg text-lg">
+                      <Link href={getContentUrl(content)}
+                        className="btn-gold inline-block px-8 py-3 rounded-lg text-lg text-center">
                           Ver detalhes
-                        </button>
                       </Link>
                     </div>
                   </div>

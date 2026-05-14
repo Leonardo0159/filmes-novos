@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { FaBars, FaSearch, FaAngleDown, FaTimes } from 'react-icons/fa';
 import { Logo } from '@/src/components/Logo';
+import { getMovieUrl, getSerieUrl } from '@/src/utils/navigation';
 
 import type { SearchResult, SearchApiItem, PlatformLink } from './Header.interfaces';
 
@@ -108,10 +109,9 @@ export const Header = () => {
                   {searchResults && searchResults.length > 0 && (
                     <div className="absolute top-full left-0 right-0 mt-2 glass rounded-xl shadow-2xl z-10 max-h-80 overflow-y-auto">
                       {searchResults.slice(0, 8).map((result, index) => {
-                        const path = result.type === 'movie' ? 'filme' : 'serie';
                         const title = result.title || result.name || '';
                         return (
-                          <Link onClick={() => { setSearchResults([]); setQuery(''); }} key={index} href={`/${path}/${title}`}>
+                          <Link onClick={() => { setSearchResults([]); setQuery(''); }} key={index} href={result.type === 'movie' ? getMovieUrl(title) : getSerieUrl(title)}>
                             <div className="flex items-center gap-3 px-4 py-3 hover:bg-cinema-700 transition-colors border-b border-white/5 last:border-0">
                               {result.poster_path && (
                                 <img src={`https://image.tmdb.org/t/p/w92${result.poster_path}`} alt="" className="w-10 h-14 rounded object-cover" />

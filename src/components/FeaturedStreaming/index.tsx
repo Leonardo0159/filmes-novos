@@ -1,11 +1,11 @@
 import { get } from '@/src/services/api';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { FaStar } from 'react-icons/fa';
 import Pagination from '@/src/components/Pagination';
+import { getContentUrl } from '@/src/utils/navigation';
 import type { TMDBPaginatedResponse } from '@/src/types/tmdb';
-import type { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import type { FeaturedStreamingProps, ContentItem, PlatformId } from './FeaturedStreaming.interfaces';
 
 const TMDB_BASE_IMAGE_URL = "https://image.tmdb.org/t/p/w500";
@@ -50,11 +50,10 @@ const FeaturedStreaming = ({ platform, initialPage }: FeaturedStreamingProps) =>
     }
   }, [currentPage, platform, contentType]);
 
-  useEffect(() => {
-    if (currentPage) {
-      router.push(`/catalago/${platform}?pagina=${currentPage}`, undefined, { shallow: true });
-    }
-  }, [currentPage, platform, router]);
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    router.push(`/catalago/${platform}?pagina=${page}`, undefined, { shallow: true });
+  };
 
   function convertDate(dateString: string): string {
     if (!dateString) return '';
@@ -108,7 +107,7 @@ const FeaturedStreaming = ({ platform, initialPage }: FeaturedStreamingProps) =>
             const isMovie = contentType === 'movie';
             return (
               <li key={item.id} className="animate-fade-in-up" style={{ animationDelay: `${idx * 0.05}s` }}>
-                <Link href={`/${isMovie ? 'filme' : 'serie'}/${encodeURIComponent(title.toLowerCase().replace(/ /g, '-'))}`}>
+                <Link href={getContentUrl(item)}>
                   <div className="group cursor-pointer">
                     <div className="relative rounded-xl overflow-hidden card-gradient-border">
                       <img
@@ -134,21 +133,10 @@ const FeaturedStreaming = ({ platform, initialPage }: FeaturedStreamingProps) =>
       </ul>
 
       {!isLoading && (
-        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
       )}
     </section>
   );
 };
-
-export async function getServerSideProps(context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<FeaturedStreamingProps>> {
-  const { nome } = context.params as { nome: string };
-  const pageQuery = context.query.pagina || 1;
-  return {
-    props: {
-      platform: nome,
-      initialPage: Number(pageQuery)
-    }
-  };
-}
 
 export default FeaturedStreaming;

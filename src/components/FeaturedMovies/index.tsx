@@ -1,11 +1,11 @@
 import { get } from '@/src/services/api';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { FaStar } from 'react-icons/fa';
 import Pagination from '@/src/components/Pagination';
+import { getMovieUrl } from '@/src/utils/navigation';
 import type { TMDBMovie, TMDBPaginatedResponse } from '@/src/types/tmdb';
-import type { GetServerSidePropsContext } from 'next';
 import type { FeaturedMoviesProps } from './FeaturedMovies.interfaces';
 
 const TMDB_BASE_IMAGE_URL = "https://image.tmdb.org/t/p/w500";
@@ -40,11 +40,10 @@ const FeaturedMovies = ({ initialPage }: FeaturedMoviesProps) => {
     return () => { cancelled = true; };
   }, [currentPage]);
 
-  useEffect(() => {
-    if (currentPage) {
-      router.push(`/?pagina=${currentPage}`, undefined, { shallow: true });
-    }
-  }, [currentPage, router]);
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    router.push(`/?pagina=${page}`, undefined, { shallow: true });
+  };
 
   function convertDate(dateString: string): string {
     if (!dateString) return '';
@@ -77,7 +76,7 @@ const FeaturedMovies = ({ initialPage }: FeaturedMoviesProps) => {
         ) : (
           movies.map((movie, idx) => (
             <li key={movie.id} className="animate-fade-in-up" style={{ animationDelay: `${idx * 0.05}s` }}>
-              <Link href={`/filme/${encodeURIComponent(movie.title.toLowerCase().replace(/ /g, '-'))}`}>
+              <Link href={getMovieUrl(movie.title)}>
                 <div className="group cursor-pointer">
                   <div className="relative rounded-xl overflow-hidden card-gradient-border">
                     <img
@@ -102,19 +101,10 @@ const FeaturedMovies = ({ initialPage }: FeaturedMoviesProps) => {
       </ul>
 
       {!isLoading && (
-        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
       )}
     </section>
   );
 };
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const pageQuery = context.query.pagina || 1;
-  return {
-    props: {
-      initialPage: Number(pageQuery)
-    }
-  };
-}
 
 export default FeaturedMovies;

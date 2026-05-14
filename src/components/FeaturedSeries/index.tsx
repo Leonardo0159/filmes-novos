@@ -1,12 +1,13 @@
 import { get } from '@/src/services/api';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { FaStar } from 'react-icons/fa';
 import Pagination from '@/src/components/Pagination';
+import { getSerieUrl } from '@/src/utils/navigation';
 import type { TMDBSeries, TMDBPaginatedResponse } from '@/src/types/tmdb';
-import type { GetServerSidePropsContext } from 'next';
 import type { FeaturedSeriesProps } from './FeaturedSeries.interfaces';
+
 
 const TMDB_BASE_IMAGE_URL = "https://image.tmdb.org/t/p/w500";
 
@@ -37,11 +38,10 @@ const FeaturedSeries = ({ initialPage }: FeaturedSeriesProps) => {
     fetchSeries();
   }, [currentPage]);
 
-  useEffect(() => {
-    if (currentPage) {
-      router.push(`/series?pagina=${currentPage}`, undefined, { shallow: true });
-    }
-  }, [currentPage, router]);
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    router.push(`/series?pagina=${page}`, undefined, { shallow: true });
+  };
 
   function convertDate(dateString: string): string {
     if (!dateString) return '';
@@ -74,7 +74,7 @@ const FeaturedSeries = ({ initialPage }: FeaturedSeriesProps) => {
         ) : (
           series.map((serie, idx) => (
             <li key={serie.id} className="animate-fade-in-up" style={{ animationDelay: `${idx * 0.05}s` }}>
-              <Link href={`/serie/${encodeURIComponent(serie.name.toLowerCase().replace(/ /g, '-'))}`}>
+              <Link href={getSerieUrl(serie.name)}>
                 <div className="group cursor-pointer">
                   <div className="relative rounded-xl overflow-hidden card-gradient-border">
                     <img
@@ -99,19 +99,10 @@ const FeaturedSeries = ({ initialPage }: FeaturedSeriesProps) => {
       </ul>
 
       {!isLoading && (
-        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
       )}
     </section>
   );
 };
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const pageQuery = context.query.pagina || 1;
-  return {
-    props: {
-      initialPage: Number(pageQuery)
-    }
-  };
-}
 
 export default FeaturedSeries;
