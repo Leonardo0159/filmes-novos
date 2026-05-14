@@ -1,21 +1,20 @@
 import { get } from '@/src/services/api';
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';  // Importe o useRouter
+import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-import Image from 'next/image';
+import { FaStar } from 'react-icons/fa';
+import Pagination from '@/src/components/Pagination';
 
 const TMDB_BASE_IMAGE_URL = "https://image.tmdb.org/t/p/w500";
 
 const FeaturedSeries = ({ initialPage }) => {
     const router = useRouter();
     const [series, setSeries] = useState([]);
-    const [currentPage, setCurrentPage] = useState(initialPage);  // Use initialPage aqui
+    const [currentPage, setCurrentPage] = useState(initialPage);
     const [totalPages, setTotalPages] = useState(1);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        // Atualize o currentPage se o query.pagina mudar
         if (router.isReady) {
             const pageFromQuery = Number(router.query.pagina) || 1;
             setCurrentPage(pageFromQuery);
@@ -32,7 +31,6 @@ const FeaturedSeries = ({ initialPage }) => {
             }
             setIsLoading(false);
         };
-
         fetchSeries();
     }, [currentPage]);
 
@@ -42,66 +40,53 @@ const FeaturedSeries = ({ initialPage }) => {
         }
     }, [currentPage]);
 
-    const goToPreviousPage = () => {
-        if (currentPage > 1) {
-            setCurrentPage(prev => prev - 1);
-        }
-        const element = document.getElementById('titulo');
-        if (element) element.scrollIntoView({ behavior: 'smooth' });
-    };
-
-    const goToNextPage = () => {
-        if (currentPage < totalPages) {
-            setCurrentPage(prev => prev + 1);
-        }
-        const element = document.getElementById('titulo');
-        if (element) element.scrollIntoView({ behavior: 'smooth' });
-    };
-
     function convertDate(dateString) {
-        if (!dateString) {
-            return '';
-        }
+        if (!dateString) return '';
         const [year, month, day] = dateString.split('-');
         return `${day}/${month}/${year}`;
     }
 
     const renderSkeleton = () => (
-        <div className="animate-pulse">
-            <div className="rounded-lg overflow-hidden shadow-lg bg-gray-300 h-64 w-full"></div>
-            <div className="p-4">
-                <div className="h-5 bg-gray-400 rounded w-3/4"></div>
-                <div className="h-4 bg-gray-400 rounded mt-2 w-1/2"></div>
-                <div className="h-4 bg-gray-400 rounded mt-2 w-1/4"></div>
+        <div>
+            <div className="rounded-xl overflow-hidden skeleton-pulse h-[340px] w-full"></div>
+            <div className="p-4 space-y-2">
+                <div className="h-5 skeleton-pulse rounded w-3/4"></div>
+                <div className="h-4 skeleton-pulse rounded w-1/2"></div>
             </div>
         </div>
     );
 
     return (
-        <section className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <h2 id='titulo' className="text-2xl mb-6 font-bold">Séries Destaques</h2>
-            <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <section className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div className="flex items-center justify-between mb-8">
+                <h2 id='titulo' className="text-3xl md:text-4xl font-bold text-white">Séries em Destaque</h2>
+                {!isLoading && totalPages > 1 && (
+                    <span className="text-sm text-gray-500">Página {currentPage} de {totalPages}</span>
+                )}
+            </div>
+
+            <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
                 {isLoading ? (
                     Array(20).fill(0).map((_, idx) => <li key={idx}>{renderSkeleton()}</li>)
                 ) : (
-                    series.map(serie => (
-                        <li key={serie.id} className="rounded-lg overflow-hidden shadow-lg bg-white">
+                    series.map((serie, idx) => (
+                        <li key={serie.id} className="animate-fade-in-up" style={{ animationDelay: `${idx * 0.05}s` }}>
                             <Link href={`/serie/${encodeURIComponent(serie.name.toLowerCase().replace(/ /g, '-'))}`}>
-                                <div aria-label={serie.name}>
-                                    <Image
-                                        src={`${TMDB_BASE_IMAGE_URL}${serie.poster_path}`}
-                                        alt={`Poster da série ${serie.name}`}
-                                        layout="responsive"
-                                        width={500}
-                                        height={750}
-                                        objectFit="cover"
-                                        loading="lazy"
-                                    />
-                                    <div className="p-4">
-                                        <h3 className="text-lg font-semibold">{serie.name}</h3>
-                                        <p className="text-sm text-gray-500 mt-2">Lançamento: {convertDate(serie.first_air_date)}</p>
-                                        <p className="text-sm text-gray-500 mt-2">Nota: {serie.vote_average}</p>
-                                        <p className="text-sm text-gray-500 mt-2">{serie.overview}</p>
+                                <div className="group cursor-pointer">
+                                    <div className="relative rounded-xl overflow-hidden card-gradient-border">
+                                        <img
+                                            src={`${TMDB_BASE_IMAGE_URL}${serie.poster_path}`}
+                                            alt={serie.name}
+                                            className="w-full aspect-[2/3] object-cover transition-transform duration-500 group-hover:scale-110"
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-cinema-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                        <div className="absolute top-2 right-2 flex items-center gap-1 bg-cinema-900/80 backdrop-blur-sm px-2 py-1 rounded-lg text-xs text-gold-500 font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                            <FaStar size={10} /> {serie.vote_average?.toFixed(1)}
+                                        </div>
+                                    </div>
+                                    <div className="mt-3 px-1">
+                                        <h3 className="text-sm md:text-base font-semibold text-white truncate group-hover:text-gold-500 transition-colors">{serie.name}</h3>
+                                        <p className="text-xs text-gray-500 mt-1">{convertDate(serie.first_air_date)}</p>
                                     </div>
                                 </div>
                             </Link>
@@ -109,25 +94,10 @@ const FeaturedSeries = ({ initialPage }) => {
                     ))
                 )}
             </ul>
-            <div className="mt-6 flex justify-between items-center">
-                <button
-                    onClick={goToPreviousPage}
-                    disabled={currentPage === 1}
-                    className="flex items-center gap-2 p-2 rounded bg-gray-200 hover:bg-gray-300 transition"
-                >
-                    <FaChevronLeft />
-                    Anterior
-                </button>
-                <span className="text-gray-700 font-semibold">Página {currentPage} de {totalPages}</span>
-                <button
-                    onClick={goToNextPage}
-                    disabled={currentPage === totalPages}
-                    className="flex items-center gap-2 p-2 rounded bg-gray-200 hover:bg-gray-300 transition"
-                >
-                    Próximo
-                    <FaChevronRight />
-                </button>
-            </div>
+
+            {!isLoading && (
+                <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+            )}
         </section>
     );
 }
@@ -136,10 +106,9 @@ export async function getServerSideProps(context) {
     const pageQuery = context.query.pagina || 1;
     return {
         props: {
-            initialPage: Number(pageQuery)  // Passe o valor da página como uma propriedade
+            initialPage: Number(pageQuery)
         }
     };
 }
-
 
 export default FeaturedSeries;
