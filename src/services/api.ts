@@ -1,4 +1,4 @@
-export const get = async (url: string): Promise<unknown> => {
+export const get = async <T>(url: string): Promise<T | null> => {
     const token = process.env.NEXT_PUBLIC_TMDB_API_KEY as string;
 
     const requestOptions: RequestInit = {

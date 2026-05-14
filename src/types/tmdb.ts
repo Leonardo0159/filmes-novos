@@ -49,8 +49,8 @@ export interface TMDBVideo {
   name: string;
 }
 
-export interface TMDBPaginatedResponse {
-  results: unknown[];
+export interface TMDBPaginatedResponse<T> {
+  results: T[];
   total_pages: number;
   total_results: number;
   page: number;
