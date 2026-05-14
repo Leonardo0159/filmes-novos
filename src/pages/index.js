@@ -3,20 +3,10 @@ import { Header } from '../components/Header'
 import { Footer } from '../components/Footer'
 import CarouselBanner from '../components/CarouselBanner'
 import FeaturedMovies from '../components/FeaturedMovies'
-import { useEffect } from 'react'
-import ReactGA from 'react-ga4';
-import FireTvComponent from '../components/FireTvComponent'
-import EchoComponent from '../components/EchoComponent'
 
-ReactGA.initialize('G-WBBLV0VBLB');
 export default function Home() {
-
-  useEffect(() => {
-    ReactGA.send("pageview");
-  }, [])
-
   return (
-    <div>
+    <div className="min-h-screen bg-cinema-900">
       <Head>
         <title>Filmes Novos | Descubra os lançamentos mais recentes do cinema</title>
         <meta name="description" content="Filmes Novos traz para você os lançamentos mais recentes do cinema. Navegue por nossos destaques e descubra os melhores filmes para assistir." />
@@ -36,19 +26,12 @@ export default function Home() {
         <meta name="twitter:image" content="/FN.png" />
         <meta name="keywords" content="Filmes, Cinema, Novidades, Lançamentos" />
         <link rel="icon" href="/favicon.ico" />
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9645579603385719" crossorigin="anonymous"></script>
-        {/* Adicione outras meta tags conforme necessário */}
       </Head>
 
-      <div className='bg-gray-100'>
-        <Header />
-        <CarouselBanner />
-        <FireTvComponent />
-        <FeaturedMovies />
-        <EchoComponent />
-        <Footer />
-      </div>
-
+      <Header />
+      <CarouselBanner />
+      <FeaturedMovies />
+      <Footer />
     </div>
   )
 }
