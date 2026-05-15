@@ -81,8 +81,10 @@ Specialized subagents are defined in `.opencode/agents/`:
 | Agent | When to use |
 |-------|-------------|
 | `frontend` | UI components, styling, Tailwind, design system, layout, responsiveness, animations |
+| `test` | Unit tests, integration tests, test infrastructure, mocking, test runner config |
 
 Before starting a frontend task, delegate to the `frontend` subagent via `task` with `subagent_type: "frontend"`.
+Before writing tests, delegate to the `test` subagent via `task` with `subagent_type: "test"`.
 
 ## Commits
 
@@ -97,4 +99,10 @@ docs: update architecture docs with new conventions
 
 ## Scripts
 
-Only listed in `package.json`. No test runner configured.
+Only listed in `package.json`. Test runner: Vitest (v4).
+
+```bash
+npx vitest            # watch mode
+npx vitest run        # single run
+npx vitest run --coverage  # with coverage
+```
