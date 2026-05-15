@@ -14,9 +14,12 @@
 
 | Tecnologia | Função |
 |------------|--------|
-| Supabase | PostgreSQL + Auth + Realtime |
-| @supabase/supabase-js | SDK cliente |
-| @supabase/ssr | Auth para Next.js Pages Router |
+| Prisma | ORM + migrations |
+| @prisma/client | SDK do banco |
+| NextAuth.js | Autenticação (Google + Credentials) |
+| @auth/prisma-adapter | Adaptador Prisma pro NextAuth |
+| Vercel Postgres (Neon) | PostgreSQL serverless |
+| bcryptjs | Hash de senhas (Credentials provider) |
 
 ## Arquitetura
 
@@ -38,10 +41,10 @@ Frontend (Next.js Pages Router)
     │     ├── Watchlist + Histórico (Fase 2)
     │     └── Hub de Reações (Fase 3)
     │
-    └── Supabase
-          ├── Auth (streamers → Fase 1, público → Fase 2)
-          ├── PostgreSQL (schedule, watchlist, follows, reactions)
-          └── Realtime (lives ativas, notificações)
+    └── Backend (Next.js API routes)
+          ├── NextAuth.js (auth — Google + Credentials)
+          ├── Prisma (ORM → PostgreSQL no Vercel Postgres)
+          └── API routes (CRUD de schedule, watchlist, etc.)
 ```
 
 ## Estrutura de pastas (adições do TakeOne)
@@ -50,7 +53,8 @@ Frontend (Next.js Pages Router)
 src/
 ├── services/
 │   ├── api.ts              ← já existe (TMDB)
-│   └── supabase.ts          ← NOVO: cliente Supabase
+│   ├── prisma.ts           ← NOVO: singleton Prisma Client
+│   └── auth.ts             ← NOVO: config NextAuth
 ├── contexts/
 │   └── AuthContext.tsx      ← NOVO (Fase 1: streamers, Fase 2: público)
 ├── components/
@@ -71,9 +75,12 @@ src/
 │   └── Tabs/                ← NOVO (Fase 3)
 ├── pages/
 │   ├── api/
-│   │   ├── auth/            ← NOVO (Fase 1: handlers Supabase Auth)
+│   │   ├── auth/
+│   │   │   └── [...nextauth].ts ← NOVO (Fase 1: NextAuth handler)
 │   │   ├── schedule/        ← NOVO (Fase 1)
 │   │   ├── streamer/        ← NOVO (Fase 1)
+│   │   ├── tmdb/
+│   │   │   └── search.ts   ← NOVO (Fase 1: proxy TMDB)
 │   │   ├── follows/         ← NOVO (Fase 2)
 │   │   ├── watchlist/       ← NOVO (Fase 2)
 │   │   ├── history/         ← NOVO (Fase 2)
@@ -98,25 +105,93 @@ src/
 NEXT_PUBLIC_TMDB_API_KEY=...
 
 # Novas
-NEXT_PUBLIC_SUPABASE_URL=...
-NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+DATABASE_URL=postgresql://...         # Vercel Postgres (Neon)
+NEXTAUTH_SECRET=...                   # openssl rand -base64 32
+NEXTAUTH_URL=http://localhost:3000    # ou produção
 ```
 
-## Serviço Supabase (src/services/supabase.ts)
+## Serviço Prisma (src/services/prisma.ts)
 
 ```typescript
-import { createClient } from '@supabase/supabase-js'
+import { PrismaClient } from '@prisma/client'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const globalForPrisma = globalThis as unknown as {
+  prisma: PrismaClient | undefined
+}
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+export const prisma = globalForPrisma.prisma ?? new PrismaClient()
+
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
 ```
 
-Para SSR, usar `@supabase/ssr` com `createPagesServerClient` nos `getServerSideProps`.
+## Serviço Auth (src/services/auth.ts)
+
+```typescript
+import type { NextAuthOptions } from 'next-auth'
+import GoogleProvider from 'next-auth/providers/google'
+import CredentialsProvider from 'next-auth/providers/credentials'
+import { PrismaAdapter } from '@auth/prisma-adapter'
+import { prisma } from './prisma'
+import bcrypt from 'bcryptjs'
+
+export const authOptions: NextAuthOptions = {
+  adapter: PrismaAdapter(prisma),
+  providers: [
+    CredentialsProvider({
+      name: 'credentials',
+      credentials: {
+        email: { label: 'Email', type: 'email' },
+        password: { label: 'Senha', type: 'password' },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) return null
+
+        const user = await prisma.user.findUnique({
+          where: { email: credentials.email },
+        })
+
+        if (!user || !user.password) return null
+
+        const isValid = await bcrypt.compare(credentials.password, user.password)
+        if (!isValid) return null
+
+        return { id: user.id, email: user.email, name: user.displayName }
+      },
+    }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+  ],
+  pages: {
+    signIn: '/streamer/dashboard',
+  },
+  session: { strategy: 'jwt' },
+  callbacks: {
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.sub!
+      }
+      return session
+    },
+  },
+}
+```
+
+## Rota NextAuth (src/pages/api/auth/[...nextauth].ts)
+
+```typescript
+import NextAuth from 'next-auth'
+import { authOptions } from '@/src/services/auth'
+
+export default NextAuth(authOptions)
+```
 
 ## Instalação de dependências
 
 ```bash
-npm install @supabase/supabase-js @supabase/ssr
+npm install prisma @prisma/client next-auth @auth/prisma-adapter bcryptjs
+npm install -D @types/bcryptjs
+npx prisma init
+npx prisma db push
 ```

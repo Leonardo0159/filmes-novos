@@ -7,8 +7,8 @@ Objetivo: ferramenta que elimina a necessidade de site próprio pra streamers de
 **Nesta fase, apenas streamers têm conta. O público acessa tudo sem autenticação.**
 
 ### Features
-- [ ] Supabase: setup do projeto, schema do banco
-- [ ] Autenticação (email + Google via Supabase Auth) — apenas para streamers
+- [ ] Prisma: schema + migrations + seed
+- [ ] Autenticação (email + Google via NextAuth.js) — apenas para streamers
 - [ ] Dashboard do streamer (`/streamer/dashboard`)
 - [ ] Pesquisa de filmes/séries via TMDB autocomplete
 - [ ] Agendamento por dia da semana + horário
@@ -33,7 +33,7 @@ Objetivo: ferramenta que elimina a necessidade de site próprio pra streamers de
 - `/embed/cronograma/[streamer]` — iframe embedável
 
 ### Novas API routes
-- `/api/auth/*` — handlers Supabase Auth
+- `/api/auth/[...nextauth]` — NextAuth.js (Google + Credentials)
 - `/api/schedule` — CRUD schedule entries
 - `/api/streamer/profile` — gerenciar perfil de streamer
 - `/api/tmdb/search` — proxy de busca TMDB (protegido, do lado do servidor)
@@ -107,137 +107,208 @@ Se no futuro fizer sentido repensar, será com base em dados reais de uso, não 
 
 ---
 
-## Schema Final
+## Schema Final (Prisma)
 
-```sql
--- Usuários (gerenciado pelo Supabase Auth + tabela pública)
-users (
-  id            uuid primary key,
-  email         text unique,
-  username      text unique,
-  display_name  text,
-  avatar_url    text,
-  created_at    timestamptz default now()
-);
+```prisma
+generator client {
+  provider = "prisma-client-js"
+}
 
--- Perfil de streamer (Fase 1)
-streamer_profiles (
-  id            uuid primary key references users(id),
-  display_name  varchar(200),
-  twitch_url    text,
-  youtube_url   text,
-  kick_url      text,
-  bio           text,
-  is_verified   boolean default false,
-  created_at    timestamptz default now()
-);
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
 
--- Cronograma semanal (Fase 1)
-schedule_entries (
-  id              uuid primary key,
-  streamer_id     uuid references streamer_profiles(id) on delete cascade,
-  tmdb_id         integer not null,
-  media_type      varchar(4) check (media_type in ('movie','tv')),
-  day_of_week     smallint check (day_of_week between 0 and 6),
-  time_of_day     time,
-  season_number   int,
-  episode_number  int,
-  title           varchar(300),         -- título personalizado (opcional)
-  label           varchar(50),          -- Live, Filme, Reacts, Sessão Dupla...
-  has_nudity      boolean default false,
-  notes           text,
-  is_recurring    boolean default false,
-  starts_at       date,
-  ends_at         date,
-  sort_order      int default 0,
-  created_at      timestamptz default now(),
-  updated_at      timestamptz
-);
+// ============================================
+// Fase 1 — Cronograma de Streamers
+// ============================================
 
--- Configuração do embed (Fase 1)
-embed_settings (
-  id            uuid primary key references streamer_profiles(id) on delete cascade,
-  theme         varchar(10) default 'dark',
-  show_header   boolean default true,
-  show_posters  boolean default true,
-  custom_css    text
-);
+model User {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  username      String   @unique
+  displayName   String?  @map("display_name")
+  avatarUrl     String?  @map("avatar_url")
+  createdAt     DateTime @default(now()) @map("created_at")
 
--- Seguir streamers (Fase 2)
-follows (
-  follower_id   uuid references users(id),
-  following_id  uuid references streamer_profiles(id),
-  created_at    timestamptz default now(),
-  primary key (follower_id, following_id)
-);
+  streamerProfile StreamerProfile?
+  follows         Follow[]
+  watchlist       Watchlist[]
+  viewingHistory  ViewingHistory[]
+  reactions       Reaction[]
+  reactionVotes   ReactionVote[]
+  notifications   Notification[]
 
--- Watchlist pessoal (Fase 2)
-watchlist (
-  id            uuid primary key,
-  user_id       uuid references users(id),
-  tmdb_id       integer not null,
-  media_type    varchar(4) check (media_type in ('movie','tv')),
-  source_entry_id uuid references schedule_entries(id) on delete set null,
-  notes         text,
-  created_at    timestamptz default now(),
-  unique(user_id, tmdb_id, media_type)
-);
+  @@map("users")
+}
 
--- Histórico de reações assistidas (Fase 2)
-viewing_history (
-  id                uuid primary key,
-  user_id           uuid references users(id),
-  schedule_entry_id uuid references schedule_entries(id) on delete cascade,
-  watched_at        timestamptz default now(),
-  unique(user_id, schedule_entry_id)
-);
+model StreamerProfile {
+  id          String   @id
+  displayName String?  @map("display_name") @db.VarChar(200)
+  twitchUrl   String?  @map("twitch_url")
+  youtubeUrl  String?  @map("youtube_url")
+  kickUrl     String?  @map("kick_url")
+  bio         String?
+  isVerified  Boolean  @default(false) @map("is_verified")
+  createdAt   DateTime @default(now()) @map("created_at")
 
--- Reações da comunidade (Fase 3)
-reactions (
-  id            uuid primary key,
-  user_id       uuid references users(id),
-  tmdb_id       integer not null,
-  media_type    varchar(4) check (media_type in ('movie','tv')),
-  platform      varchar(10) check (platform in ('youtube','twitch','kick','tiktok')),
-  url           text not null,
-  title         varchar(300),
-  channel_name  varchar(200),
-  content_type  varchar(10) check (content_type in ('live','vod','clip')),
-  status        varchar(10) default 'pending' check (status in ('pending','approved','rejected')),
-  created_at    timestamptz default now()
-);
+  user           User               @relation(fields: [id], references: [id])
+  scheduleEntries ScheduleEntry[]
+  embedSettings  EmbedSettings?
+  followers      Follow[]
+  streamSessions StreamSession[]
 
--- Votos em reações (Fase 3)
-reaction_votes (
-  id            uuid primary key,
-  reaction_id   uuid references reactions(id) on delete cascade,
-  user_id       uuid references users(id),
-  vote          smallint check (vote in (1, -1)),
-  unique(reaction_id, user_id)
-);
+  @@map("streamer_profiles")
+}
 
--- Sessões ao vivo / agendadas (Fase 3)
-stream_sessions (
-  id            uuid primary key,
-  streamer_id   uuid references streamer_profiles(id),
-  tmdb_id       integer not null,
-  media_type    varchar(4),
-  platform      varchar(10),
-  scheduled_for timestamptz,
-  title         varchar(300),
-  is_live       boolean default false,
-  created_at    timestamptz default now()
-);
+model ScheduleEntry {
+  id            String    @id @default(uuid())
+  streamerId    String    @map("streamer_id")
+  tmdbId        Int       @map("tmdb_id")
+  mediaType     String    @map("media_type") @db.VarChar(4)
+  dayOfWeek     Int       @map("day_of_week")
+  timeOfDay     String?   @map("time_of_day")
+  seasonNumber  Int?      @map("season_number")
+  episodeNumber Int?      @map("episode_number")
+  title         String?   @db.VarChar(300)
+  label         String?   @db.VarChar(50)
+  hasNudity     Boolean   @default(false) @map("has_nudity")
+  notes         String?
+  isRecurring   Boolean   @default(false) @map("is_recurring")
+  startsAt      DateTime? @map("starts_at")
+  endsAt        DateTime? @map("ends_at")
+  sortOrder     Int       @default(0) @map("sort_order")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime? @updatedAt @map("updated_at")
 
--- Notificações (Fase 2)
-notifications (
-  id            uuid primary key,
-  user_id       uuid references users(id),
-  type          varchar(50),          -- 'new_schedule', 'streamer_followed', etc.
-  title         varchar(300),
-  body          text,
-  data          jsonb,                -- dados contextuais (streamer_id, tmdb_id, etc.)
-  read          boolean default false,
-  created_at    timestamptz default now()
-);
+  streamerProfile StreamerProfile @relation(fields: [streamerId], references: [id], onDelete: Cascade)
+  watchlist       Watchlist[]
+  viewingHistory  ViewingHistory[]
+
+  @@map("schedule_entries")
+}
+
+model EmbedSettings {
+  id           String  @id
+  theme        String  @default("dark") @db.VarChar(10)
+  showHeader   Boolean @default(true) @map("show_header")
+  showPosters  Boolean @default(true) @map("show_posters")
+  customCss    String? @map("custom_css")
+
+  streamerProfile StreamerProfile @relation(fields: [id], references: [id], onDelete: Cascade)
+
+  @@map("embed_settings")
+}
+
+// ============================================
+// Fase 2 — Utilitários do Espectador
+// ============================================
+
+model Follow {
+  followerId  String   @map("follower_id")
+  followingId String   @map("following_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  follower  User            @relation(fields: [followerId], references: [id])
+  following StreamerProfile @relation(fields: [followingId], references: [id])
+
+  @@id([followerId, followingId])
+  @@map("follows")
+}
+
+model Watchlist {
+  id            String   @id @default(uuid())
+  userId        String   @map("user_id")
+  tmdbId        Int      @map("tmdb_id")
+  mediaType     String   @map("media_type") @db.VarChar(4)
+  sourceEntryId String?  @map("source_entry_id")
+  notes         String?
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  user          User           @relation(fields: [userId], references: [id])
+  scheduleEntry ScheduleEntry? @relation(fields: [sourceEntryId], references: [id], onDelete: SetNull)
+
+  @@unique([userId, tmdbId, mediaType])
+  @@map("watchlist")
+}
+
+model ViewingHistory {
+  id              String   @id @default(uuid())
+  userId          String   @map("user_id")
+  scheduleEntryId String   @map("schedule_entry_id")
+  watchedAt       DateTime @default(now()) @map("watched_at")
+
+  user          User          @relation(fields: [userId], references: [id])
+  scheduleEntry ScheduleEntry @relation(fields: [scheduleEntryId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, scheduleEntryId])
+  @@map("viewing_history")
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  type      String   @db.VarChar(50)
+  title     String   @db.VarChar(300)
+  body      String?
+  data      Json?
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("notifications")
+}
+
+// ============================================
+// Fase 3 — Hub de Reações
+// ============================================
+
+model Reaction {
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id")
+  tmdbId      Int      @map("tmdb_id")
+  mediaType   String   @map("media_type") @db.VarChar(4)
+  platform    String   @db.VarChar(10)
+  url         String
+  title       String?  @db.VarChar(300)
+  channelName String?  @map("channel_name") @db.VarChar(200)
+  contentType String?  @map("content_type") @db.VarChar(10)
+  status      String   @default("pending") @db.VarChar(10)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  user  User            @relation(fields: [userId], references: [id])
+  votes ReactionVote[]
+
+  @@map("reactions")
+}
+
+model ReactionVote {
+  id         String @id @default(uuid())
+  reactionId String @map("reaction_id")
+  userId     String @map("user_id")
+  vote       Int
+
+  reaction Reaction @relation(fields: [reactionId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id])
+
+  @@unique([reactionId, userId])
+  @@map("reaction_votes")
+}
+
+model StreamSession {
+  id           String    @id @default(uuid())
+  streamerId   String    @map("streamer_id")
+  tmdbId       Int       @map("tmdb_id")
+  mediaType    String?   @map("media_type") @db.VarChar(4)
+  platform     String?   @db.VarChar(10)
+  scheduledFor DateTime? @map("scheduled_for")
+  title        String?   @db.VarChar(300)
+  isLive       Boolean   @default(false) @map("is_live")
+  createdAt    DateTime  @default(now()) @map("created_at")
+
+  streamerProfile StreamerProfile @relation(fields: [streamerId], references: [id])
+
+  @@map("stream_sessions")
+}
 ```
