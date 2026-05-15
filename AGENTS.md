@@ -82,9 +82,11 @@ Specialized subagents are defined in `.opencode/agents/`:
 |-------|-------------|
 | `frontend` | UI components, styling, Tailwind, design system, layout, responsiveness, animations |
 | `test` | Unit tests, integration tests, test infrastructure, mocking, test runner config |
+| `harness` | Verify tasks were actually implemented by checking file existence, exports, code patterns |
 
 Before starting a frontend task, delegate to the `frontend` subagent via `task` with `subagent_type: "frontend"`.
 Before writing tests, delegate to the `test` subagent via `task` with `subagent_type: "test"`.
+After implementation, delegate to the `harness` subagent via `task` with `subagent_type: "harness"` to verify all tasks and generate a report.
 
 ## Commits
 
